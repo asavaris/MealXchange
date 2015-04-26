@@ -1,0 +1,7 @@
+from polls.models import Exchanges
+from datetime import datetime
+
+Exchanges.objects.all()
+a = Exchanges(name1 = 'Louis', name2 = 'Louis2', club1 = 'terr', club2 = 'terr2', month = datetime.now())
+a.save()
+Exchanges.objects.all()

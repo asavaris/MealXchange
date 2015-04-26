@@ -1,0 +1,30 @@
+<HTML>
+<body>
+<form action="/Xchange/EditMembership" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+</body>
+</HTML>
+
+<HTML>
+<body>
+<form action="/Xchange/EditMembership" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+<h5>Host 	Guest	Host club 	Guest club 	breakfast	lunch	dinner	month</h5>
+{% if exchanges %}
+    <ul>
+    {% for exchange in exchanges %}
+        <h6>{{ exchange.name1}}	{{exchange.name2}}	{{exchange.club1}}	{{exchange.club2}} {{exchange.breakfast}} {{exchange.lunch}} {{exchange.dinner}} {{exchange.month}}</h6>
+
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</body>
+</HTML>

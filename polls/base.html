@@ -1,0 +1,70 @@
+ Skip to content
+Please note that GitHub no longer supports old versions of Firefox.
+
+We recommend upgrading to the latest Safari, Google Chrome, or Firefox.
+This repository
+
+    Explore
+    Gist
+    Blog
+    Help
+
+    @LouisGuerra LouisGuerra
+
+    15
+    112
+    38
+
+macdhuibh/django-registration-templates
+
+django-registration-templates/base.html
+Anders Hofstee Apr 17, 2014
+updated base.html to embrace HTML5.
+
+1 contributor
+38 lines (31 sloc) 0.865 kb
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="{{ STATIC_URL }}style.css" />
+<title>{% block title %}User test{% endblock %}</title>
+</head>
+<body>
+<div id="header">
+{% block header %}
+<a href="{% url 'index' %}">{% trans "Home" %}</a> |
+{% if user.is_authenticated %}
+{% trans "Logged in" %}: {{ user.username }}
+(<a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a> |
+<a href="{% url 'auth_password_change' %}">{% trans "Change password" %}</a>)
+{% else %}
+<a href="{% url 'auth_login' %}">{% trans "Log in" %}</a>
+{% endif %}
+<hr />
+{% endblock %}
+</div>
+<div id="content">
+{% block content %}{% endblock %}
+</div>
+<div id="footer">
+{% block footer %}
+<hr />
+{% endblock %}
+</div>
+</body>
+</html>
+
+    Status
+    API
+    Training
+    Shop
+    Blog
+    About
+
+    © 2015 GitHub, Inc.
+    Terms
+    Privacy
+    Security
+    Contact
+

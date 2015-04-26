@@ -1,0 +1,24 @@
+from django.conf.urls import url
+
+from . import views
+
+#r'^(?P<ticket>.+)/$'
+#'^(?P<question_id>[0-9]+)/$'
+
+urlpatterns = [
+	url(r'^(?i)LogIn/$', views.LogIn, name='LogIn'),
+	url(r'^(?i)Home/$', views.Home, name='Home'),
+	url(r'^(?i)Exchange/$', views.Exchange, name='Exchange'),
+	url(r'^(?i)Guest/$', views.Guest, name='Guest'),
+	url(r'^(?i)Thanks/$', views.Thanks, name='Thanks'),
+	url(r'^(?i)Error/$', views.Error, name='Error'),
+	# url(r'^(?i)Exchange/Thanks/$', views.ExchangeThanks, name='ExchangeThanks'),
+	# url(r'^(?i)Guest/Thanks/$', views.GuestThanks, name='GuestThanks'),
+    url(r'^(?i)ViewExchanges/$', views.ViewExchanges, name='ViewExchanges'),
+    url(r'^(?i)ClubPrefs/$', views.ClubPrefs, name='ClubPrefs'),
+    url(r'^(?i)EditMembership/$', views.EditMembership, name='EditMembership'), 
+    
+]
+
+# 	url(r'^HostLogIn/$', views.HostLogIn, name='HostLogIn'),
+    # url(r'^SearchExchanges$', views.SearchExchanges, name='SearchExchanges'), 
