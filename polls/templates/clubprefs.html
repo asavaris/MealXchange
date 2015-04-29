@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+{% load i18n %}
+
 <html lang="en">
 
 <head>
@@ -15,7 +17,7 @@
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../../static/css/home.css" rel="stylesheet">
+    <link href="../../static/css/clubprefs.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="../../static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -31,29 +33,21 @@
 </head>
 
 <body>
-
-    <!-- Navigation -->
     <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
     <nav id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
-            <li class="sidebar-brand">
-                <a href="#top"  onclick = $("#menu-close").click(); >Welcome </a>
+            <li>
+                <a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Home</a>
+                <a href="/Xchange/ClubPrefs">Preferences and Settings</a>
             </li>
             <li>
-                <a href="#about" onclick = $("#menu-close").click(); >About</a>
+                <a href="/Xchange/ViewExchanges">View Exchanges</a>
             </li>
             <li>
-                <a href="#services" onclick = $("#menu-close").click(); >Services</a>
-            </li>
-            <li>
-                <a href="#portfolio" onclick = $("#menu-close").click(); >Portfolio</a>
-            </li>
-            <li>
-                <a href="#contact" onclick = $("#menu-close").click(); >Contact</a>
+                <a href="/Xchange/EditMembership">Edit Membership</a>
             </li>
         </ul>
     </nav>
@@ -73,8 +67,91 @@
                     <h2>Club Preferences</h2>
                     <form action="/Xchange/ClubPrefs" method="post">
                         {% csrf_token %}
-                        {{ form }}
-                        <input type="submit" value="Submit" />
+                        <!-- {{ form }} -->
+                        <br><br>
+
+
+                        <table align="center">
+                          <tr>
+
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Breakfast Start Time</font> </label><br><br>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.b_start }}<br><br>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Breakfast End Time</font> </label><br><br>
+
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.b_end }}<br><br>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Lunch Start Time</font> </label><br><br>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.l_start }}<br><br>
+                            </td>
+                          </tr>
+                            <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Lunch End Time</font> </label><br><br>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.l_end }}<br><br>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Dinner Start Time</font> </label><br><br>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.d_start }}<br><br>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Dinner End Time</font> </label><br><br>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.d_end }}<br><br>
+                            </td>
+                          </tr>
+                            <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Brunch Start Time</font> </label><br><br>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.br_start }}<br><br>
+                            </td>
+                          </tr>
+                            <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Brunch End Time</font> </label><br><br>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.br_end }}<br><br>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align="left">
+                                <label for="club_name"> <font color="black">Max Number of Guests per Month:</font> </label>
+                            </td>
+                            <td align="left">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.max_guests}}
+                            </td>
+                          </tr>
+
+
+                        </table>
+                        <a href="../Home" class="btn btn-dark btn-lg">Go Back</a>
+
+                        <input type="submit" value="Save" class="btn btn-dark btn-lg">
                     </form>
                 </div>
             </header>

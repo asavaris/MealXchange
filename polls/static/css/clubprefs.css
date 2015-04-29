@@ -164,6 +164,30 @@ hr.small {
     margin: 5px 5px 0 0;
 }
 
+select option {
+    margin:0px;
+    background: rgba(f,f,f,1);
+    color:#000000;
+    width:80px;
+    text-shadow:0 1px 0 rgba(0,0,0,0.4);
+}
+
+ select {
+  
+   background: rgba(f,f,f,1);
+   width: 100px;
+   font-size: 12pt;
+   color:black;
+   border: 0;
+   border-radius: 0;
+   height: 28px;
+   -webkit-appearance: none;
+   }
+   .select_join select:focus {
+    outline: none;
+
+}
+
 /* Header */
 
 .header {
@@ -232,11 +256,12 @@ hr.small {
 }
 
 input[type=text] {
-    width: 250px;
+    width: 100px;
     height: 40px;
     font-size: 20px;
     background-color:rgba(245,245,245,0.8);
 }
+
 
 /* Call to Action */
 

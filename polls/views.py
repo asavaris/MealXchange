@@ -141,7 +141,8 @@ def ClubPrefs(request):
         if form.is_valid():
             f = form.cleaned_data
             print f
-            c = ClubPrefs(club_name=f['club_name'], b_start=f['b_start'], l_start=f['l_start'], d_start=f['d_start'], br_start=f['br_start'],
+
+            c = ClubPrefs(b_start=f['b_start'], l_start=f['l_start'], d_start=f['d_start'], br_start=f['br_start'],
             b_end=f['b_end'], l_end=f['l_end'], d_end=f['d_end'], br_end=f['br_end'], max_guests=f['max_guests'])
             
             c.save()

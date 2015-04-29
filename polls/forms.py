@@ -17,7 +17,7 @@ class ClubPrefsForm(forms.Form):
 	# timefields = [("6:00","6:00"), ("6:30","6:30"), ("7:00","7:00"), ("7:30", "7:30"), ("8:00","8:00"), ("8:30":"8:30"), ("9:00", "9:00"), ("9:30", "9:30"), ("10:00","10:00"), ("10:30","10:30"), ("11:00","11:00"), ("11:30", "11:30"), ("12:00","12:00"), ("12:30":"12:30"), ("13:00", "13:00"), ("13:30", "13:30"), ("14:00","14:00"), ("14:30","14:30"), ("15:00","15:00"), ("15:30", "15:30"), ("16:00","16:00"), ("16:30":"16:30"), ("17:00", "17:00"), ("17:30", "17:30"), ("18:00","18:00"), ("18:30","18:30"), ("19:00","19:00"), ("19:30", "19:30"), ("20:00","20:00"), ("20:30":"20:30"), ("21:00", "21:00"), ("21:30", "21:30")]
 
 	timefields = [("6:00","6:00"), ("6:30","6:30"), ("7:00","7:00"), ("7:30", "7:30"), ("8:00","8:00"), ("8:30", "8:30"), ("9:00", "9:00"), ("9:30", "9:30"), ("10:00","10:00"), ("10:30","10:30"), ("11:00","11:00"), ("11:30", "11:30"), ("12:00","12:00"), ("12:30", "12:30"), ("13:00", "13:00"), ("13:30", "13:30"), ("14:00","14:00"), ("14:30","14:30"), ("15:00","15:00"), ("15:30", "15:30"), ("16:00","16:00"), ("16:30", "16:30"), ("17:00", "17:00"), ("17:30", "17:30"), ("18:00","18:00"), ("18:30","18:30"), ("19:00","19:00"), ("19:30", "19:30"), ("20:00","20:00"), ("20:30", "20:30"), ("21:00", "21:00"), ("21:30", "21:30")]
-	club_name = forms.CharField(label='club name', max_length=100, required=False)
+	#club_name = forms.CharField(label='club name', max_length=100, required=False)
 
 	b_start = forms.ChoiceField(timefields, label='Breakfast start time', required=False)
 	b_end = forms.ChoiceField(timefields, label='Breakfast end time', required=False)
@@ -38,11 +38,11 @@ class ClubPrefsForm(forms.Form):
 	# br_start = forms.TimeField(label='Brunch start time', widget = forms.TimeInput(format='%H:%M'), required=False)
 	# br_end = forms.TimeField(label='Brunch end time', widget = forms.TimeInput(format='%H:%M'), required=False)
 
-	max_guests = forms.IntegerField(label="Maximum number of guest", required = False)
+	max_guests = forms.IntegerField(label="Maximum number of guests", required = False)
 
 class ViewExchangesForm(forms.Form):
 	# ll = forms.BooleanField(label='Member netid', required=False)
-    netid = forms.CharField(label='Member netid', max_length=20, required=False)
+    netid = forms.CharField(label='Member netid', max_length = 20, required=False)
 
 class EditMembershipForm(forms.Form):
 	name = 	forms.CharField(label='name', max_length=300, required=False)
