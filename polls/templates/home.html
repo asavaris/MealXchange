@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+{% load i18n %}
+
 <html lang="en">
 
 <head>
@@ -44,7 +46,16 @@
                 <a href="#top" onclick = $("#menu-close").click(); >Home</a>
             </li>
             <li>
-                <a href="#about" onclick = $("#menu-close").click(); >About</a>
+                <a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a>
+            </li>
+            <li>
+                <a href="/Xchange/ClubPrefs">Preferences and Settings</a>
+            </li>
+            <li>
+                <a href="/Xchange/ViewExchanges">View Exchanges</a>
+            </li>
+            <li>
+                <a href="/Xchange/EditMembership">Edit Membership</a>
             </li>
             <li>
                 <a href="#services" onclick = $("#menu-close").click(); >Services</a>

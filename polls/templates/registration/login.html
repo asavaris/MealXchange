@@ -1,10 +1,14 @@
-{% extends "base.html" %}
+{% extends "login2.html" %}
 {% load i18n %}
 
 {% block content %}
 <form method="post" action=".">
   {% csrf_token %} 
-  {{ form.as_p }}
+  {{ form.as_p}}
+
+  <!--<input type='hidden' name='csrfmiddlewaretoken' value='98eBFlORsYdwTc2ML8YWlexrwK4Q7SDm' /> 
+  <p><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></p>
+<p><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></p>-->
 
   <input type="submit" value="{% trans 'Log in' %}" />
   <input type="hidden" name="next" value="{{ next }}" />
@@ -13,3 +17,4 @@
 <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
 <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
 {% endblock %}
+

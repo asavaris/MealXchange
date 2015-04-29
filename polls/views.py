@@ -103,6 +103,9 @@ def Guest(request):
 def Thanks(request):
     return render(request, 'thanks.html')
 
+def LoggedOut(request):
+    return render(request, 'loggedout.html')
+
 @login_required(redirect_field_name = None)
 def Error(request):
     return render(request, 'error.html')

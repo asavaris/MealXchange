@@ -11,6 +11,7 @@ urlpatterns = [
 	url(r'^(?i)Exchange/$', views.Exchange, name='Exchange'),
 	url(r'^(?i)Guest/$', views.Guest, name='Guest'),
 	url(r'^(?i)Thanks/$', views.Thanks, name='Thanks'),
+	url(r'^(?i)LoggedOut/$', views.LoggedOut, name='LoggedOut'),
 	url(r'^(?i)Error/$', views.Error, name='Error'),
 	# url(r'^(?i)Exchange/Thanks/$', views.ExchangeThanks, name='ExchangeThanks'),
 	# url(r'^(?i)Guest/Thanks/$', views.GuestThanks, name='GuestThanks'),
