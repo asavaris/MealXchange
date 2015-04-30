@@ -21,10 +21,13 @@
 	- In error.html: "go back" literally goes back in history, want to just go to previous link
 	- Possible different error pages to solve above problem
 	- Add error redirect to all classes in views.py (if !form.is_valid)
+- Club Preferences (Ava)
+	- Still making minor fixes
+	- Adding a saved changes page
 
 - Footer and background image citations (Paco)
 	- Already done, just need to merge changes
-- Club Preferences page (Paco)
+- Club Preferences (Paco)
 	- Filled out with latest info so users don't have to retype everything to make one change
 - Logo (Paco?)
 
