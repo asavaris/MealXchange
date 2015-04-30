@@ -16,6 +16,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.requests import RequestSite
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.utils import timezone
 
 @login_required(redirect_field_name = None)
 def LogIn(request):
@@ -62,24 +63,77 @@ def Exchange(request):
             global guest 
             guest = form.cleaned_data['guest_name']
 
-            # Exchanges.objects.all()
-            print("printing all members")
-            Members.objects.all()
             try:
-                guestObject = Members.objects.get(netid=guest)
+                guestObject = Members.objects.get(netID=str(guest))
             except:
-                print("guest failed: " + guest + "\n")
                 return render(request, 'errorExchange.html')
             try:
-                hostObject = Members.objects.get(netid=host)
+                hostObject = Members.objects.get(netID=str(host))
             except:
-                print("host failed: " + host + "\n")
                 return render(request, 'errorExchange.html')
 
-            a = Exchanges(hostName = host, guestName = guest, hostClub = str(request.user), guestClub = guestObject.club, month = datetime.now())
-            a.save()
-            print("new exchange: " + a)
-            # print Exchanges.objects.all()
+            if (str(request.user) != hostObject.club):
+                return render(request, 'error.html')
+
+            meal = whichMeal(request, datetime.now())
+
+            #a = Exchanges(hostName = host, guestName = guest, hostClub = str(request.user), guestClub = guestObject.club, month = datetime.now())
+            #a.save()
+
+            # increment host, decrement guest
+            # person that's first in alphabetical order is always the "host"
+            name1 = min(host, guest)
+            name2 = max(host, guest)
+
+            name1Club = Members.objects.get(netID=str(name1)).club
+            name2Club = Members.objects.get(netID=str(name2)).club
+
+            if (name1Club == name2Club):
+                return render(request, 'error.html')
+
+            # if exchange exists, get it
+            try:
+                exchangeObject = Exchanges.objects.get(hostName=str(name1), guestName=str(name2))
+
+            # otherwise, new exchange
+            except:
+                exchangeObject = Exchanges(hostName = name1, guestName = name2, hostClub = name1Club, guestClub = name2Club, month = datetime.now())
+                exchangeObject.save()
+
+
+            print("which meal is it?" + meal)
+
+
+            # if name1 is hosting, we increment
+            if (host == name1):
+                if (meal == "breakfast"):
+                    exchangeObject.breakfast += 1
+                    exchangeObject.save()
+                elif (meal == "brunch"):
+                    exchangeObject.brunch += 1
+                    exchangeObject.save()
+                elif (meal == "lunch"):
+                    exchangeObject.lunch += 1
+                    exchangeObject.save()
+                elif (meal == "dinner"):
+                    exchangeObject.dinner += 1
+                    exchangeObject.save()
+
+            #if name2 is hosting, we decrement
+            if (host == name2):
+                if (meal == "breakfast"):
+                    exchangeObject.breakfast -= 1
+                    exchangeObject.save()
+                elif (meal == "brunch"):
+                    exchangeObject.brunch -= 1
+                    exchangeObject.save()
+                elif (meal == "lunch"):
+                    exchangeObject.lunch -= 1
+                    exchangeObject.save()
+                elif (meal == "dinner"):
+                    exchangeObject.dinner -= 1
+                    exchangeObject.save()
+
 
             # SEND CONFIRMATION EMAIL, netid@princeton.edu
             # first check that they are valid netids, if not, go to error page
@@ -94,6 +148,34 @@ def Exchange(request):
         form = ExchangeForm()
 
     return render(request, 'exchange.html', {'form': form})
+
+@login_required(redirect_field_name = None)
+def whichMeal(request, time):
+    try:
+        prefs = ClubPrefs.objects.get(club_name=str(request.user))
+    except:
+        return "no matching club"
+
+    day = time.weekday()
+
+    # if weekend 
+    if (day > 5):
+        if (prefs.br_start <= time <= prefs.br_end):
+            meal = "brunch"
+        if (prefs.d_start <= time <= prefs.d_end):
+            meal = "dinner"
+
+    else:
+        if (prefs.b_start <= time <= prefs.b_end):
+            meal = "breakfast"
+        if (prefs.l_start <= time <= prefs.l_end):
+            meal = "lunch"
+        if (prefs.d_start <= time <= prefs.d_end):
+            meal = "dinner"
+    return meal
+
+
+
 
 @login_required(redirect_field_name = None)
 def Guest(request):

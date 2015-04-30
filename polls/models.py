@@ -11,12 +11,13 @@ class Exchanges(models.Model):
     breakfast   = models.IntegerField(default=0)
     lunch       = models.IntegerField(default=0)
     dinner      = models.IntegerField(default=0)
+    brunch      = models.IntegerField(default=0)
 
     #month       = models.DateTimeField('month').now().month
     month       = models.DateTimeField(default = datetime.now().month)
 
     def __unicode__(self):              # __unicode__ on Python 2
-        return "%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d"%(self.name1, self.club1, self.name2, self.club2, self.breakfast, self.lunch, self.dinner, self.month.month)
+        return "%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d"%(self.hostName, self.hostClub, self.guestName, self.guestClub, self.breakfast, self.lunch, self.dinner, self.month.month)
 
 
 class Members(models.Model):
