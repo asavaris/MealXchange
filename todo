@@ -27,6 +27,7 @@
 
 - Footer and background image citations (Paco)
 	- Already done, just need to merge changes
+	- Cite bootstrap template used, ask Ava if need help with background images
 - Club Preferences (Paco)
 	- Filled out with latest info so users don't have to retype everything to make one change
 - Logo (Paco?)
@@ -35,3 +36,4 @@
 	- Is this done???
 
 - 500 error page (and any page that is rendered when a server error occurs)
+- How to make some urls not reachable just by typing in (or generated automatically?) - e.g. thanks, error, savedchanges

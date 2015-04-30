@@ -35,13 +35,22 @@
 <body>
 
     <!-- Navigation -->
-    <a id="menu-toggle" href="#" class="btn btn-menu btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
     <nav id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
             
+            <!--
+            <li class="sidebar-brand">
+                <a href="/Xchange/Home"  onclick = $("#menu-close").click(); >Home </a>
+            </li>
             <li>
-                <a href="/Xchange/Home">Home</a>
+                <a href="#top" onclick = $("#menu-close").click(); >Home</a>
+            </li>
+            -->
+
+            <li class="sidebar-brand">
+                <a href="/Xchange/Home"  onclick = $("#menu-close").click(); >Home </a>
             </li>
             <li>
                 <a href="/Xchange/ClubPrefs">Club Preferences</a>
@@ -53,7 +62,7 @@
                 <a href="/Xchange/ViewExchanges">View Exchanges</a>
             </li>
             <li>
-                <a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a>
+                <a href="{% url 'auth_logout' %}">{% trans "Log Out" %}</a>
             </li>
         </ul>
     </nav>

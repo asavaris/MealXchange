@@ -18,8 +18,7 @@ body {
 
 .text-vertical-center {
     display: table-cell;
-    text-align: center;
-    vertical-align: middle;
+    padding-top: 60px;
 }
 
 .text-vertical-center h1 {
@@ -30,10 +29,11 @@ body {
 
 .text-vertical-center h2 {
     text-align: left;
-    font-size: 250%;
+    font-size: 200%;
     font-weight: 500;
     color: #FF8000;
-    text-shadow: -1px -1px #000000, 1px 1px #000000, 1px -1px #000000, 1px -1px #000000;
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: #000;
 }
 
 /* Custom Button Styles */
