@@ -11,13 +11,13 @@
   <p><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></p>
 <p><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></p>-->
 
-  <input type="submit" value="{% trans 'Log in' %}" />
+  <input type="submit" style="color: #ff8000" value="{% trans 'Log in' %}" />
   <br>
   <input type="hidden" name="next" value="{{ next }}" />
   <br>
 </form>
 
-<p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-<p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+<p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}" style="color: #fff; text-decoration: underline">{% trans "Reset it" %}</a>!</p>
+<p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}" style="color: #fff; text-decoration: underline">{% trans "Register" %}</a>!</p>
 {% endblock %}
 
