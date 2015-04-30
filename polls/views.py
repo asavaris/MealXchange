@@ -110,6 +110,10 @@ def LoggedOut(request):
 def Error(request):
     return render(request, 'error.html')
 
+@login_required(redirect_field_name = None)
+def SavedChanges(request):
+    return render(request, 'savedchanges.html')
+
 # def ExchangeThanks(request):
 #     return HttpResponse(host + " hosted " + guest)
 
@@ -147,7 +151,7 @@ def handleClubPrefs(request):
             
             c.save()
             print ClubPrefs.objects.all()
-            return HttpResponseRedirect("../Thanks")
+            return HttpResponseRedirect("../SavedChanges")
     else:
         print "form isn't valid"
         form = ClubPrefsForm()

@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Princeton MealXchange - Home</title>
+    <title>Princeton MealXchange - Club Preferences</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
@@ -37,17 +37,21 @@
     <nav id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+
             <li>
-                <a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a>
+                <a href="/Xchange/Home">Home</a>
             </li>
             <li>
-                <a href="/Xchange/ClubPrefs">Preferences and Settings</a>
+                <a href="/Xchange/ClubPrefs">Club Preferences</a>
+            </li>
+            <li>
+                <a href="/Xchange/EditMembership">Edit Membership</a>
             </li>
             <li>
                 <a href="/Xchange/ViewExchanges">View Exchanges</a>
             </li>
             <li>
-                <a href="/Xchange/EditMembership">Edit Membership</a>
+                <a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a>
             </li>
         </ul>
     </nav>
@@ -57,11 +61,11 @@
     <header id="top" class="header">
         <div class="text-vertical-center">
             <br><br>
-            <h2>Club Preferences</h2>
+            <h2 style="margin-left:200px;">Club Preferences</h2>
             <form action="/Xchange/ClubPrefs/" method="post">
                 {% csrf_token %}
                 <!-- {{ form }} -->
-                <br><br>
+                <br>
 
                 <table align="left" style="margin-left:200px;">
                   <tr>

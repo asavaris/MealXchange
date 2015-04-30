@@ -1,0 +1,22 @@
+- Club Preferences page
+	- Filled out with latest info so users don't have to retype everything to make one change
+- View Exchanges page
+	- Asavari
+- Edit Membership page
+	- Asavari
+- Email authentication for exchange/guest netids
+	- Michael (links back to error stuff)
+- End of month emails
+	- Michael?
+- Error pages
+	- In error.html: "go back" literally goes back in history, want to just go to previous link
+	- Possible different error pages to solve above problem
+	- Add error redirect to all classes in views.py (if !form.is_valid)
+- Login page
+	- Styling (use placeholder)
+	- Redirect to whatever page user is trying to visit, not to home page
+- Calculate exchanges
+	- Is this done???
+- Footer and image citations
+	- Paco
+- 500 error page (and any page that is rendered when a server error occurs)
