@@ -25,15 +25,16 @@ body {
 .text-vertical-center h1 {
     margin: 0;
     font-size: 4.5em;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .text-vertical-center h2 {
     text-align: left;
     font-size: 250%;
-    font-weight: 500;
+    font-weight: 600;
     color: #FF8000;
-    text-shadow: -1px -1px #000000, 1px 1px #000000, 1px -1px #000000, 1px -1px #000000;
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: #000;
 }
 
 /* Custom Button Styles */
