@@ -9,6 +9,10 @@
 	- Change username in account registration to club name
 	- Whenever put entry into database, use club username
 	- How to find guest club's username?
+- Error pages (Michael)
+	- Add error redirect to all classes in views.py (if !form.is_valid)
+	- In error.html: "go back" literally goes back in history, want to just go to previous link
+	- Possible different error pages to solve above problem
 - End of month emails (Michael?)
 	- Should be easy once we know how to send email
 
@@ -16,11 +20,6 @@
 	- Styling (use placeholder)
 	- accounts/login should redirect to whatever page user is trying to visit, not to home page
 	- Style edit registration pages (password reset and accounts register, reached from login page)
-
-- Error pages (Ava)
-	- In error.html: "go back" literally goes back in history, want to just go to previous link
-	- Possible different error pages to solve above problem
-	- Add error redirect to all classes in views.py (if !form.is_valid)
 - Club Preferences (Ava)
 	- Still making minor fixes
 	- Adding a saved changes page
