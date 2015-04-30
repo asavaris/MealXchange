@@ -17,13 +17,6 @@ from django.contrib.sites.requests import RequestSite
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
-
-class RemoveNextMiddleWare(object):
-    def process_request(self, object):
-        if request.path == settings.LOGIN_URL and request.Get.has_key('next'):
-            return HttpResponseRedirect(settings.LOGIN_URL)
-
-
 @login_required(redirect_field_name = None)
 def LogIn(request):
 
@@ -46,7 +39,7 @@ def LogIn(request):
                     return HttpResponse("The password is valid, but the account has been disabled!")
         else:
             # the authentication system was unable to verify the username and password
-            return HttpResponse("The username and password were incorrect.")
+            return render(request, 'error.html')
     else:
         form = AuthenticationForm()
 
@@ -76,8 +69,9 @@ def Exchange(request):
 
             print "Thanks"
             return HttpResponseRedirect("../Thanks/")
+        else:
+            return render(request, 'error.html')
     else:
-        # print "form isn't valid"
         form = ExchangeForm()
 
     return render(request, 'exchange.html', {'form': form})
@@ -93,8 +87,9 @@ def Guest(request):
             host = form.cleaned_data['host_name']
 
             return HttpResponseRedirect("../Thanks/")
+        else:
+            return render(request, 'error.html')
     else:
-        # print "form isn't valid"
         form = GuestForm()
 
     return render(request, 'guest.html', {'form': form})
@@ -114,12 +109,6 @@ def Error(request):
 def SavedChanges(request):
     return render(request, 'savedchanges.html')
 
-# def ExchangeThanks(request):
-#     return HttpResponse(host + " hosted " + guest)
-
-# def GuestThanks(request):
-#     return HttpResponse(host + " hosted a guest")
-
 @login_required(redirect_field_name = None)
 def ViewExchanges(request):
     exchanges = Exchanges.objects.all()       
@@ -131,6 +120,8 @@ def ViewExchanges(request):
             # return SearchExchanges(request, f['netid'])
             exchanges = Exchanges.objects.filter(name1=f['netid'])
             return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
+        else:
+            return render(request, 'error.html')
     else:
         print "form isn't valid"
         form = ViewExchangesForm()
@@ -152,8 +143,9 @@ def handleClubPrefs(request):
             c.save()
             print ClubPrefs.objects.all()
             return HttpResponseRedirect("../SavedChanges")
+        else:
+            return render(request, 'error.html')
     else:
-        print "form isn't valid"
         form = ClubPrefsForm()
 
     return render(request, 'clubprefs.html', {'form': form})
@@ -168,6 +160,8 @@ def EditMembership(request):
             f = form.cleaned_data
             print f
             return HttpResponse("Here's your membership.")
+        else:
+            return render(request, 'error.html')
     else:
         form = EditMembershipForm()
 
