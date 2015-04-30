@@ -3,10 +3,10 @@ from datetime import datetime
 
 class Exchanges(models.Model):
     #global name1, name2, club1, club2, breakfast, lunch, dinner, month
-    name1       = models.CharField(max_length=30)
-    club1       = models.CharField(max_length=30)
-    name2       = models.CharField(max_length=30)
-    club2       = models.CharField(max_length=30)
+    hostName       = models.CharField(max_length=30)
+    hostClub       = models.CharField(max_length=30)
+    guestName       = models.CharField(max_length=30)
+    guestClub       = models.CharField(max_length=30)
 
     breakfast   = models.IntegerField(default=0)
     lunch       = models.IntegerField(default=0)
@@ -30,7 +30,7 @@ class Members(models.Model):
         return "%s\t%s\t%d\t%s\t%d"%(self.name, self.club, self.year, self.netID, self.numguests)
 
 class ClubPrefs(models.Model):
-
+    club_name       = models.CharField(default="", max_length=30)
     b_start         = models.TimeField(default="00:00")
     l_start         = models.TimeField(default="00:00")
     d_start         = models.TimeField(default="00:00")

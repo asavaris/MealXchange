@@ -63,13 +63,32 @@ def Exchange(request):
             guest = form.cleaned_data['guest_name']
 
             # Exchanges.objects.all()
-            # a = Exchanges(name1 = guest, name2 = host, club1 = 'terrace', club2 = 'tower', month = datetime.now())
-            # a.save()
+            print("printing all members")
+            Members.objects.all()
+            try:
+                guestObject = Members.objects.get(netid=guest)
+            except:
+                print("guest failed: " + guest + "\n")
+                return render(request, 'error.html')
+            try:
+                hostObject = Members.objects.get(netid=host)
+            except:
+                print("host failed: " + host + "\n")
+                return render(request, 'error.html')
+
+            a = Exchanges(hostName = host, guestName = guest, hostClub = str(request.user), guestClub = guestObject.club, month = datetime.now())
+            a.save()
+            print("new exchange: " + a)
             # print Exchanges.objects.all()
 
-            print "Thanks"
+            # SEND CONFIRMATION EMAIL, netid@princeton.edu
+            # first check that they are valid netids, if not, go to error page
+
+            print "Thanks\n"
+            print ("which club is using this right now? " + str(request.user))
             return HttpResponseRedirect("../Thanks/")
         else:
+            print("form isnt valid \n")
             return render(request, 'error.html')
     else:
         form = ExchangeForm()
@@ -137,8 +156,10 @@ def handleClubPrefs(request):
             f = form.cleaned_data
             print f
 
+            previousEntries = ClubPrefs.objects.filter(club_name=str(request.user)).delete()
+
             c = ClubPrefs(b_start=f['b_start'], l_start=f['l_start'], d_start=f['d_start'], br_start=f['br_start'],
-            b_end=f['b_end'], l_end=f['l_end'], d_end=f['d_end'], br_end=f['br_end'], max_guests=f['max_guests'])
+            b_end=f['b_end'], l_end=f['l_end'], d_end=f['d_end'], br_end=f['br_end'], max_guests=f['max_guests'], club_name=str(request.user))
             
             c.save()
             print ClubPrefs.objects.all()
@@ -166,6 +187,13 @@ def EditMembership(request):
         form = EditMembershipForm()
 
     return render(request, 'EditMembership.html', {'form': form}) 
+
+def Confirmation(request, anystring=None):
+    if (anystring):
+        print("we got an anystring varable: " + anystring)
+
+
+
 
 # --------------------------------------------
 

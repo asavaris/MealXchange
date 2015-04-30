@@ -18,7 +18,8 @@ urlpatterns = [
     url(r'^(?i)ViewExchanges/$', views.ViewExchanges, name='ViewExchanges'),
     url(r'^(?i)ClubPrefs/$', views.handleClubPrefs, name='handleClubPrefs'),
     url(r'^(?i)SavedChanges/$', views.SavedChanges, name='SavedChanges'), 
-    url(r'^(?i)EditMembership/$', views.EditMembership, name='EditMembership'), 
+    url(r'^(?i)EditMembership/$', views.EditMembership, name='EditMembership'),
+    url(r'^/Confirmation/(?P<anystring>\w+)/$', views.Confirmation, name='Confirmation'),
     
 ]
 
