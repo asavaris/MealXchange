@@ -30,7 +30,6 @@ class Members(models.Model):
         return "%s\t%s\t%d\t%s\t%d"%(self.name, self.club, self.year, self.netID, self.numguests)
 
 class ClubPrefs(models.Model):
-    club_name        = models.CharField(max_length=30, default='name')
 
     b_start         = models.TimeField(default="00:00")
     l_start         = models.TimeField(default="00:00")
