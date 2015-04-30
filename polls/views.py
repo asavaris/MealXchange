@@ -134,7 +134,7 @@ def ViewExchanges(request):
     return render(request, 'ViewExchanges.html', {'form': form, 'exchanges' : exchanges})    
 
 @login_required(redirect_field_name = None)
-def ClubPrefs(request):
+def handleClubPrefs(request):
     if request.method == 'POST':
         form = ClubPrefsForm(request.POST)
         print "in post"
@@ -147,7 +147,7 @@ def ClubPrefs(request):
             
             c.save()
             print ClubPrefs.objects.all()
-            return HttpResponseRedirect("LogIn/")
+            return HttpResponseRedirect("../Home")
     else:
         print "form isn't valid"
         form = ClubPrefsForm()
@@ -168,19 +168,6 @@ def EditMembership(request):
         form = EditMembershipForm()
 
     return render(request, 'EditMembership.html', {'form': form}) 
-
-@login_required(redirect_field_name = None)
-def detail(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
-
-@login_required(redirect_field_name = None)
-def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
-
-@login_required(redirect_field_name = None)
-def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)
 
 # --------------------------------------------
 

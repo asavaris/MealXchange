@@ -43,4 +43,6 @@ class ClubPrefs(models.Model):
     max_guests   = models.IntegerField(default=0)
 
     def __unicode__(self):              # __unicode__ on Python 2
-        return "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\%d"%(self.club_name, str(self.b_start), str(self.b_end), str(self.l_start), str(self.l_end), str(self.d_start), str(self.d_end), str(self.br_start), str(self.br_end), self.max_guests)
+        return "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\%d"%(str(self.b_start), str(self.b_end), str(self.l_start), str(self.l_end), str(self.d_start), str(self.d_end), str(self.br_start), str(self.br_end), self.max_guests)
+
+
