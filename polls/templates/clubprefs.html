@@ -33,7 +33,7 @@
 </head>
 
 <body>
-    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <a id="menu-toggle" href="#" class="btn btn-menu btn-lg toggle"><i class="fa fa-bars"></i></a>
     <nav id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
@@ -52,114 +52,129 @@
         </ul>
     </nav>
 
- 
-
-    <!-- Callout -->
-    <aside class="callout">
-        <div class="text-vertical-center">
-
-
-
 
    <!-- Header -->
-            <header id="top" class="header">
-                <div class="text-vertical-center">
-                    <h2>Club Preferences</h2>
-                    <form action="/Xchange/ClubPrefs" method="post">
-                        {% csrf_token %}
-                        <!-- {{ form }} -->
-                        <br><br>
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <br><br>
+            <h2>Club Preferences</h2>
+            <form action="/Xchange/ClubPrefs/" method="post">
+                {% csrf_token %}
+                <!-- {{ form }} -->
+                <br><br>
 
+                <table align="left" style="margin-left:200px;">
+                  <tr>
 
-                        <table align="center">
-                          <tr>
+                    <td align="left">
+                        <label for="b_start"> <font color="black"> <font size="4px"> Breakfast Start Time</font> </label><br><br>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.b_start }}<br><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                        <label for="b_end"> <font color="black"> <font size="4px">Breakfast End Time</font> </label><br><br>
 
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Breakfast Start Time</font> </label><br><br>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.b_start }}<br><br>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Breakfast End Time</font> </label><br><br>
-
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.b_end }}<br><br>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Lunch Start Time</font> </label><br><br>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.l_start }}<br><br>
-                            </td>
-                          </tr>
-                            <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Lunch End Time</font> </label><br><br>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.l_end }}<br><br>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Dinner Start Time</font> </label><br><br>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.d_start }}<br><br>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Dinner End Time</font> </label><br><br>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.d_end }}<br><br>
-                            </td>
-                          </tr>
-                            <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Brunch Start Time</font> </label><br><br>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.br_start }}<br><br>
-                            </td>
-                          </tr>
-                            <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Brunch End Time</font> </label><br><br>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.br_end }}<br><br>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="left">
-                                <label for="club_name"> <font color="black">Max Number of Guests per Month:</font> </label>
-                            </td>
-                            <td align="left">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.max_guests}}
-                            </td>
-                          </tr>
-
-
-                        </table>
-                        <a href="../Home" class="btn btn-dark btn-lg">Go Back</a>
-
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.b_end }}<br><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                        <label for="l_start"> <font color="black"> <font size="4px">Lunch Start Time</font> </label><br><br>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.l_start }}<br><br>
+                    </td>
+                  </tr>
+                    <tr>
+                    <td align="left">
+                        <label for="l_end"> <font color="black"> <font size="4px">Lunch End Time</font> </label><br><br>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.l_end }}<br><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                        <label for="d_start"> <font color="black"> <font size="4px">Dinner Start Time</font> </label><br><br>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.d_start }}<br><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                        <label for="d_end"> <font color="black"> <font size="4px">Dinner End Time</font> </label><br><br>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.d_end }}<br><br>
+                    </td>
+                  </tr>
+                    <tr>
+                    <td align="left">
+                        <label for="br_start"> <font color="black"> <font size="4px">Brunch Start Time</font> </label><br><br>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.br_start }}<br><br>
+                    </td>
+                  </tr>
+                    <tr>
+                    <td align="left">
+                        <label for="br_end"> <font color="black"> <font size="4px">Brunch End Time</font> </label><br><br>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.br_end }}<br><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                        <label for="max_guest"> <font color="black"> <font size="4px">Max Number of Guests per Month:</font> </label>
+                    </td>
+                    <td align="left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ form.max_guests}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                        <br>
+                        <!-- 
+                        <form method="link" action="/Xchange/Home/">
+                            <input type="submit" value="Go Back">
+                        </form>
+                        <input type="submit" value="Save"> 
+                        -->
+                        <a href="../Home/" class="btn btn-dark btn-lg">Back</a>
+                        &nbsp;&nbsp;&nbsp;
                         <input type="submit" value="Save" class="btn btn-dark btn-lg">
-                    </form>
-                </div>
-            </header>
+                    </td>
+                    <td align="left">
+                    </td>
+                  </tr>
+                  <br>
 
-
-
+                </table>
+                <br><br>
+                <!-- 
+                <a href="../Home" class="btn btn-dark btn-lg">Go Back</a>
+                <input type="submit" value="Save" class="btn btn-dark btn-lg"> 
+                -->
+                <br><br>
+            </form>
         </div>
-    </aside>
+    </header>
 
     <!-- jQuery -->
     <script src="../../static/js/jquery.js"></script>
