@@ -147,7 +147,7 @@ def handleClubPrefs(request):
             
             c.save()
             print ClubPrefs.objects.all()
-            return HttpResponseRedirect("../Home")
+            return HttpResponseRedirect("../Thanks")
     else:
         print "form isn't valid"
         form = ClubPrefsForm()
