@@ -69,12 +69,12 @@ def Exchange(request):
                 guestObject = Members.objects.get(netid=guest)
             except:
                 print("guest failed: " + guest + "\n")
-                return render(request, 'error.html')
+                return render(request, 'errorExchange.html')
             try:
                 hostObject = Members.objects.get(netid=host)
             except:
                 print("host failed: " + host + "\n")
-                return render(request, 'error.html')
+                return render(request, 'errorExchange.html')
 
             a = Exchanges(hostName = host, guestName = guest, hostClub = str(request.user), guestClub = guestObject.club, month = datetime.now())
             a.save()
@@ -89,7 +89,7 @@ def Exchange(request):
             return HttpResponseRedirect("../Thanks/")
         else:
             print("form isnt valid \n")
-            return render(request, 'error.html')
+            return render(request, 'errorExchange.html')
     else:
         form = ExchangeForm()
 
@@ -107,7 +107,7 @@ def Guest(request):
 
             return HttpResponseRedirect("../Thanks/")
         else:
-            return render(request, 'error.html')
+            return render(request, 'errorGuest.html')
     else:
         form = GuestForm()
 
@@ -140,7 +140,7 @@ def ViewExchanges(request):
             exchanges = Exchanges.objects.filter(name1=f['netid'])
             return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
         else:
-            return render(request, 'error.html')
+            return render(request, 'errorViewExchanges.html')
     else:
         print "form isn't valid"
         form = ViewExchangesForm()
@@ -165,7 +165,7 @@ def handleClubPrefs(request):
             print ClubPrefs.objects.all()
             return HttpResponseRedirect("../SavedChanges")
         else:
-            return render(request, 'error.html')
+            return render(request, 'errorClubPreferences.html')
     else:
         form = ClubPrefsForm()
 
@@ -182,7 +182,7 @@ def EditMembership(request):
             print f
             return HttpResponse("Here's your membership.")
         else:
-            return render(request, 'error.html')
+            return render(request, 'errorEditMembership.html')
     else:
         form = EditMembershipForm()
 
