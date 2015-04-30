@@ -20,6 +20,7 @@
 	- Styling (use placeholder)
 	- accounts/login should redirect to whatever page user is trying to visit, not to home page
 	- Style edit registration pages (password reset and accounts register, reached from login page)
+	
 - Club Preferences (Ava)
 	- Still making minor fixes
 	- Adding a saved changes page
