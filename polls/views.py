@@ -17,6 +17,8 @@ from django.contrib.sites.requests import RequestSite
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import timezone
+from .tables import SimpleTable, NameTable
+from django_tables2   import RequestConfig
 
 @login_required(redirect_field_name = None)
 def LogIn(request):
@@ -64,15 +66,20 @@ def Exchange(request):
             guest = form.cleaned_data['guest_name']
 
             try:
+                print "guest is"
                 guestObject = Members.objects.get(netID=str(guest))
             except:
+                print "Guest Object not found"
                 return render(request, 'errorExchange.html')
             try:
+                print "host is"
                 hostObject = Members.objects.get(netID=str(host))
             except:
+                print "Host Object not found"
                 return render(request, 'errorExchange.html')
 
             if (str(request.user) != hostObject.club):
+                print "%s != %s"%(str(request.user), str(hostObject.club))
                 return render(request, 'error.html')
 
             meal = whichMeal(request, datetime.now())
@@ -150,21 +157,23 @@ def Exchange(request):
     return render(request, 'exchange.html', {'form': form})
 
 @login_required(redirect_field_name = None)
-def whichMeal(request, time):
+def whichMeal(request, date_time):
+    time = date_time.time()
     try:
         prefs = ClubPrefs.objects.get(club_name=str(request.user))
     except:
+        print "no club"
         return "no matching club"
 
-    day = time.weekday()
-
+    day = date_time.weekday()
+    print "day is " + str(day)
+    meal = "null"
     # if weekend 
     if (day > 5):
         if (prefs.br_start <= time <= prefs.br_end):
             meal = "brunch"
         if (prefs.d_start <= time <= prefs.d_end):
             meal = "dinner"
-
     else:
         if (prefs.b_start <= time <= prefs.b_end):
             meal = "breakfast"
@@ -255,83 +264,54 @@ def handleClubPrefs(request):
 
 @login_required(redirect_field_name = None)
 def EditMembership(request):
-    membership = Members.objects.all()       
-    if request.method == 'POST':
-        form = EditMembershipForm(request.POST)
+    print "in edit membership"
+    membership = Members.objects.filter(club=str(request.user)) 
+    members = []
+    for member in membership:
 
-        if form.is_valid():
-            f = form.cleaned_data
-            print f
-            return HttpResponse("Here's your membership.")
-        else:
-            return render(request, 'errorEditMembership.html')
+        m = {}
+        m["netID"] = member.netID
+        m["name"] = member.name
+        m["year"] = member.year
+        members.append(m)
+
+    print members
+    if request.method == "POST":
+        print request
+        print "its a post method"
+        # table = SimpleTable(members)
+        # RequestConfig(request).configure(table)
+        
+        selected = request.POST.getlist("Amend")
+        select_objects = Members.objects.filter(netID__in=selected)
+        print "SELECTED OBJECTS"
+        print select_objects
+        return HttpResponse("It worked")
     else:
-        form = EditMembershipForm()
+        print request
+        print "we'rre in the esle"
+        table = SimpleTable(members)
+        RequestConfig(request).configure(table)
 
-    return render(request, 'EditMembership.html', {'form': form}) 
+
+    return render(request, 'EditMembership2.html', {'table': table})
+
+
+    # return render(request, 'people.html', {'table': table})
+    # if request.method == 'POST':
+    #     form = EditMembershipForm(request.POST, members=membership)
+
+    #     if form.is_valid():
+    #         f = form.cleaned_data
+    #         print f
+    #         return HttpResponse("Here's your membership.")
+    #     else:
+    #         return render(request, 'errorEditMembership.html')
+    # else:
+    #     form = EditMembershipForm(members=membership)
+
+    # return render(request, 'EditMembership.html', {'form': form, 'members': membership}) 
 
 def Confirmation(request, anystring=None):
     if (anystring):
         print("we got an anystring varable: " + anystring)
-
-
-
-
-# --------------------------------------------
-
-# def HostLogIn(request):
-#     global freshRequest
-#     freshRequest = request
-#     hostRequest = request
-#     print "host page: " + str(request)
-#     print request.POST 
-#     return check_login(request, "http://localhost:8000/Xchange/VisitorLogIn", "host")
-
-    #print "<p>Think of this as the main page of your application after %s has been authenticated." % (netid)
-
-
-# def VisitorLogIn(request):
-    #return HttpResponse("Hello, world. You're at the vISITOR lOGin.")
-    # print "visitor page: " + str(request)
-    # return check_login(freshRequest, "http://localhost:8000/Xchange", "guest")
-    # return check_login(request, "http://localhost:8000/Xchange", "guest")
-
-# def LogOut(request):
-#     request.session['netid'] = None
-    #request.session.flush()
-    # return HttpResponseRedirect("http://fed.princeton.edu/cas/logout")
-
-
-# def check_login(request, redirect, person):
-#     print "request is = " + str(request)
-#     cas_url = "https://fed.princeton.edu/cas/"
-#     service_url = 'http://' + urllib.quote(request.META['HTTP_HOST'] + request.META['PATH_INFO'])
-#     service_url = re.sub(r'ticket=[^&]*&?', '', service_url)
-#     service_url = re.sub(r'\?&?$|&$', '', service_url)
-#     if "ticket" in request.GET:
-#         val_url = cas_url + "validate?service=" + service_url + '&ticket=' + urllib.quote(request.GET['ticket'])
-#         r = urllib.urlopen(val_url).readlines() #returns 2 lines
-        
-#         print "r = " + str(r)
-#         print "val_url = " + str(val_url)
-
-#         if len(r) == 2 and re.match("yes", r[0]) != None:
-
-#             request.session['netid'] = r[1].strip()
-
-#             if(str(person) == "host"):
-#                 hostNetId = request.session['netid']
-#             elif(str(person) == "guest"):
-#                 guestNetId = request.session['netid']
-
-#             # LogOut(request)
-#             sleep(1)
-#             webbrowser.open("https://fed.princeton.edu/cas/logout")
-#             sleep(1)
-#             # print "Are we in a loop?"
-#             return HttpResponseRedirect(redirect)
-#         else:
-#             return HttpResponse("FAILURE")
-#     else:
-#         login_url = cas_url + 'login?service=' + service_url
-#         return HttpResponseRedirect(login_url)

@@ -45,9 +45,17 @@ class ViewExchangesForm(forms.Form):
     netid = forms.CharField(label='Member netid', max_length = 20, required=False)
 
 class EditMembershipForm(forms.Form):
-	name = 	forms.CharField(label='name', max_length=300, required=False)
-	netid = forms.CharField(label='netid', max_length=20, required=False)
-	year = forms.CharField(label='year', max_length=10, required=False)
+	def __init__(self, *args, **kwargs):
+		members = kwargs.pop('members')
+
+		super(EditMembershipForm, self).__init__(*args, **kwargs)
+
+		for member in members:
+			self.fields["%s"%member.netID] = forms.BooleanField(label= "%s\t%s\t%d\t"%(member.name, member.netID, member.year))
+
+			# name = 	forms.CharField(label='name', max_length=300, required=False)
+			# netid = forms.CharField(label='netid', max_length=20, required=False)
+			# year = forms.CharField(label='year', max_length=10, required=False)
 
 class row(forms.Form):
 	check = forms.BooleanField(label="", required=False)

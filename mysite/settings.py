@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'polls',
     'django.contrib.staticfiles',
+    'django_tables2',
 )
 
 
@@ -90,6 +91,9 @@ TEMPLATES = [
         },
     },
 ]
+
+TEMPLATE_CONTEXT_PROCESSORS = [
+'django.core.context_processors.request']
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
