@@ -1,0 +1,5 @@
+Hello {{ user }},
+
+Click here to confirm your MealXchange: {{ link }}
+
+Thanks!

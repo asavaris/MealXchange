@@ -22,6 +22,8 @@ from django_tables2   import RequestConfig
 from django.db.models import Q
 from django.core.mail import send_mail, EmailMessage
 import random, string
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 def id_generator(size):
     l = ["filler"]
@@ -32,26 +34,20 @@ def id_generator(size):
     print s
     return s
 
-def signup_email(netid, signup_link):
+def send_email_plz(link, netid):
+    subject = 'Confirm Meal Exchange'
+    email = netid + "@princeton.edu"
+    to = [email]
+    from_email = settings.DEFAULT_FROM_EMAIL
 
-    subject, from_email, to = 'Meal Exchange Confirmation', settings.EMAIL_HOST_USER, [netid + "@princeton.edu"]
+    ctx = {
+    'user': netid,
+    'link': link
+    }
 
-    print subject
-    print from_email
-    print to
+    message_text = render_to_string('confirm3.txt', ctx)
 
-    text_content = 'Click on link to confirm meal exchange \n' + signup_link
-
-    print text_content
-
-    # send_mail(subject, text_content, settings.DEFAULT_FROM_EMAIL, to)
-    email = EmailMessage(subject, text_content, from_email, to)
-    email.send()
-
-    # html_content = render_to_string('confirm.html', {'netid': netid, 'signup_link':signup_link})
-    # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-    # msg.attach_alternative(html_content, "text/html")
-    # return msg 
+    EmailMessage(subject, message_text, to=to, from_email=from_email).send()
 
 @login_required(redirect_field_name = None)
 def LogIn(request):
@@ -136,15 +132,17 @@ def Exchange(request):
 
             print confirm
 
-            host_signup_link = "http://127.0.0.1:8000/Xchange/Confirmation/" + confirm.hostConfirmString
-            guets_signup_link = "http://127.0.0.1:8000/Xchange/Confirmation/" + confirm.guestConfirmString
+            host_signup_link = "localhost:8000/Xchange/Confirmation/" + confirm.hostConfirmString
+            guest_signup_link = "localhost:8000/Xchange/Confirmation/" + confirm.guestConfirmString
 
-            signup_email(netid=host, signup_link=host_signup_link)
-            # msg.send()
 
-            print "msg sent"
-            signup_email(netid=guest, signup_link=guets_signup_link)
-            # msg2.send()
+            print "host signup link: " + host_signup_link
+            print "host: " + host
+            send_email_plz(host_signup_link, host)
+
+            print "should have just sent to host"
+            send_email_plz(guest_signup_link, guest)
+            print "should have just sent to guest"
 
             print "Thanks\n"
             print ("which club is using this right now? " + str(request.user))
