@@ -19,6 +19,13 @@ class Exchanges(models.Model):
     def __unicode__(self):              # __unicode__ on Python 2
         return "%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d"%(self.hostName, self.hostClub, self.guestName, self.guestClub, self.breakfast, self.lunch, self.dinner, self.month.month)
 
+class ConfirmExchange(models.Model):
+    hostHasConfirmed = models.BooleanField(default=False)
+    guestHasConfirmed = models.BooleanField(default=False)
+    exchange_str = models.CharField(default="", max_length=400)
+    hostConfirmString = models.CharField(default = "", max_length=100)
+    guestConfirmString = models.CharField(default = "", max_length=100)
+
 
 class Members(models.Model):
     name        = models.CharField(max_length=30)

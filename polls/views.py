@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 import urllib, re
-from polls.models import Exchanges, Members, ClubPrefs
+from polls.models import Exchanges, Members, ClubPrefs, ConfirmExchange
 import _ssl;_ssl.PROTOCOL_SSLv23 = _ssl.PROTOCOL_SSLv3
 import os
 import webbrowser
@@ -19,6 +19,39 @@ from django.conf import settings
 from django.utils import timezone
 from .tables import SimpleTable, NameTable
 from django_tables2   import RequestConfig
+from django.db.models import Q
+from django.core.mail import send_mail, EmailMessage
+import random, string
+
+def id_generator(size):
+    l = ["filler"]
+    s = ''.join(random.SystemRandom().choice(string.uppercase + string.digits) for i in xrange(size))
+    # while len(l) == 0:
+    #     s = ''.join(random.SystemRandom().choice(string.uppercase + string.digits) for i in xrange(size))
+    #     l = ConfirmExchange.objects.filter(Q(hostConfirm=s) | Q(guestConfirm=s))
+    print s
+    return s
+
+def signup_email(netid, signup_link):
+
+    subject, from_email, to = 'Meal Exchange Confirmation', settings.EMAIL_HOST_USER, [netid + "@princeton.edu"]
+
+    print subject
+    print from_email
+    print to
+
+    text_content = 'Click on link to confirm meal exchange \n' + signup_link
+
+    print text_content
+
+    # send_mail(subject, text_content, settings.DEFAULT_FROM_EMAIL, to)
+    email = EmailMessage(subject, text_content, from_email, to)
+    email.send()
+
+    # html_content = render_to_string('confirm.html', {'netid': netid, 'signup_link':signup_link})
+    # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    # msg.attach_alternative(html_content, "text/html")
+    # return msg 
 
 @login_required(redirect_field_name = None)
 def LogIn(request):
@@ -84,66 +117,34 @@ def Exchange(request):
 
             meal = whichMeal(request, datetime.now())
 
+            if (hostObject.club == guestObject.club):
+                return render(request, 'error.html')
             #a = Exchanges(hostName = host, guestName = guest, hostClub = str(request.user), guestClub = guestObject.club, month = datetime.now())
             #a.save()
 
             # increment host, decrement guest
             # person that's first in alphabetical order is always the "host"
-            name1 = min(host, guest)
-            name2 = max(host, guest)
+            name1 = host
+            name2 = guest
 
-            name1Club = Members.objects.get(netID=str(name1)).club
-            name2Club = Members.objects.get(netID=str(name2)).club
+            print "confirming "
+            exchange_str = "%s, %s, %s"%(name1, name2, meal)
+            host_id = id_generator(64)
+            guest_id = id_generator(64)
+            confirm = ConfirmExchange(hostConfirmString=host_id, guestConfirmString=guest_id, exchange_str=exchange_str, hostHasConfirmed=False, guestHasConfirmed=False)
+            confirm.save()
 
-            if (name1Club == name2Club):
-                return render(request, 'error.html')
+            print confirm
 
-            # if exchange exists, get it
-            try:
-                exchangeObject = Exchanges.objects.get(hostName=str(name1), guestName=str(name2))
+            host_signup_link = "http://127.0.0.1:8000/Xchange/Confirmation/" + confirm.hostConfirmString
+            guets_signup_link = "http://127.0.0.1:8000/Xchange/Confirmation/" + confirm.guestConfirmString
 
-            # otherwise, new exchange
-            except:
-                exchangeObject = Exchanges(hostName = name1, guestName = name2, hostClub = name1Club, guestClub = name2Club, month = datetime.now())
-                exchangeObject.save()
+            signup_email(netid=host, signup_link=host_signup_link)
+            # msg.send()
 
-
-            print("which meal is it?" + meal)
-
-
-            # if name1 is hosting, we increment
-            if (host == name1):
-                if (meal == "breakfast"):
-                    exchangeObject.breakfast += 1
-                    exchangeObject.save()
-                elif (meal == "brunch"):
-                    exchangeObject.brunch += 1
-                    exchangeObject.save()
-                elif (meal == "lunch"):
-                    exchangeObject.lunch += 1
-                    exchangeObject.save()
-                elif (meal == "dinner"):
-                    exchangeObject.dinner += 1
-                    exchangeObject.save()
-
-            #if name2 is hosting, we decrement
-            if (host == name2):
-                if (meal == "breakfast"):
-                    exchangeObject.breakfast -= 1
-                    exchangeObject.save()
-                elif (meal == "brunch"):
-                    exchangeObject.brunch -= 1
-                    exchangeObject.save()
-                elif (meal == "lunch"):
-                    exchangeObject.lunch -= 1
-                    exchangeObject.save()
-                elif (meal == "dinner"):
-                    exchangeObject.dinner -= 1
-                    exchangeObject.save()
-
-
-            # SEND CONFIRMATION EMAIL, netid@princeton.edu
-            # first check that they are valid netids, if not, go to error page
+            print "msg sent"
+            signup_email(netid=guest, signup_link=guets_signup_link)
+            # msg2.send()
 
             print "Thanks\n"
             print ("which club is using this right now? " + str(request.user))
@@ -221,19 +222,25 @@ def SavedChanges(request):
 
 @login_required(redirect_field_name = None)
 def ViewExchanges(request):
-    exchanges = Exchanges.objects.all()       
+    exchanges = Exchanges.objects.filter(hostClub=request.user)
+    # exchanges2 =  Exchanges.objects.filter(guestClub=request.user)
+    print "exchanges"
+    print exchanges
+    # print "exchanges2"
+    # print exchanges2
     if request.method == 'POST': 
         form = ViewExchangesForm(request.POST)
         if form.is_valid():
             f = form.cleaned_data
             print f
             # return SearchExchanges(request, f['netid'])
-            exchanges = Exchanges.objects.filter(name1=f['netid'])
+            exchanges = Exchanges.objects.filter( Q(hostClub=request.user) & Q(hostName=f['netid']) )
             return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
         else:
+            print "invalid form"
             return render(request, 'errorViewExchanges.html')
     else:
-        print "form isn't valid"
+        print "form empty"
         form = ViewExchangesForm()
 
     return render(request, 'ViewExchanges.html', {'form': form, 'exchanges' : exchanges})    
@@ -296,22 +303,74 @@ def EditMembership(request):
 
     return render(request, 'EditMembership2.html', {'table': table})
 
-
-    # return render(request, 'people.html', {'table': table})
-    # if request.method == 'POST':
-    #     form = EditMembershipForm(request.POST, members=membership)
-
-    #     if form.is_valid():
-    #         f = form.cleaned_data
-    #         print f
-    #         return HttpResponse("Here's your membership.")
-    #     else:
-    #         return render(request, 'errorEditMembership.html')
-    # else:
-    #     form = EditMembershipForm(members=membership)
-
-    # return render(request, 'EditMembership.html', {'form': form, 'members': membership}) 
-
 def Confirmation(request, anystring=None):
+    print "Confirmation"
     if (anystring):
         print("we got an anystring varable: " + anystring)
+
+        hc = ConfirmExchange.objects.filter(hostConfirmString=anystring)
+        gc = ConfirmExchange.objects.filter(guestConfirmString=anystring)
+
+        if (len(hc) > 0):
+            hc[0].hostHasConfirmed = True
+            hc[0].save()
+            c = hc[0]
+        if (len(gc) > 0):
+            gc[0].guestHasConfirmed = True
+            gc[0].save()
+            c = gc[0]
+
+        if c.guestHasConfirmed and c.hostHasConfirmed:
+            print "both confirmed"
+            exchange_obj_str = re.split("\s*,\s*", c.exchange_str)
+            print exchange_obj_str
+
+            name1 = exchange_obj_str[0]
+            name2 = exchange_obj_str[1]
+            meal = exchange_obj_str[2]
+            name1Club = Members.objects.get(netID=str(exchange_obj_str[0])).club
+            name2Club = Members.objects.get(netID=str(exchange_obj_str[1])).club
+            # if exchange exists, get it
+            try:
+                print "this exchange object exists"
+                exchangeHostObject = Exchanges.objects.get(hostName=str(name1), guestName=str(name2))
+                exchangeGuestObject = Exchanges.objects.get(guestName=str(name1), hostName=str(name2))
+                print "exchange Host - "
+                print exchangeHostObject
+                print "exchange Guest - "
+                print exchangeGuestObject
+            # otherwise, new exchange
+            except:
+                exchangeHostObject = Exchanges(hostName = name1, guestName = name2, hostClub = name1Club, guestClub = name2Club, month = datetime.now())
+                exchangeHostObject.save()
+                exchangeGuestObject = Exchanges(guestName = name1, hostName = name2, guestClub = name1Club, hostClub = name2Club, month = datetime.now())
+                exchangeGuestObject.save()
+
+
+            print("which meal is it?" + meal)
+        # if name1 is hosting, we increment
+            if (meal == "breakfast"):
+                exchangeHostObject.breakfast += 1
+                exchangeGuestObject.breakfast -= 1
+                exchangeHostObject.save()
+                exchangeGuestObject.save()
+            elif (meal == "brunch"):
+                exchangeHostObject.brunch += 1
+                exchangeGuestObject.brunch -= 1
+                exchangeHostObject.save()
+                exchangeGuestObject.save()
+            elif (meal == "lunch"):
+                print "its lunch"
+                exchangeHostObject.lunch += 1
+                exchangeGuestObject.lunch -= 1
+                exchangeHostObject.save()
+                exchangeGuestObject.save()
+            elif (meal == "dinner"):
+                exchangeHostObject.dinner += 1
+                exchangeGuestObject.dinner -= 1
+                exchangeHostObject.save()
+                exchangeGuestObject.save()
+
+            c.delete()
+        return HttpResponse("Great.")
+    return HttpResponse("that's not valid")

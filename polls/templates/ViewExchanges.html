@@ -1,20 +1,34 @@
 <HTML>
 <body>
-<form action="/Xchange/ViewExchanges" method="post">
+<form action="/Xchange/ViewExchanges/" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" />
 </form>
-<h5>Host 	Guest	Host club 	Guest club 	breakfast	lunch	dinner	month</h5>
-{% if exchanges %}
-    <ul>
-    {% for exchange in exchanges %}
-        <h6>{{ exchange.name1}}	{{exchange.name2}}	{{exchange.club1}}	{{exchange.club2}} {{exchange.breakfast}} {{exchange.lunch}} {{exchange.dinner}} {{exchange.month}}</h6>
-
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+<table>
+	<tr>
+		<th> Host </th>
+		<th> Guest </th>
+		<th> Guest club </th>
+		<th> Breakfast </th>
+		<th> Lunch </th>
+		<th> Dinner </th>
+		<th> Month </th>
+	</tr>
+	{% if exchanges %}
+	{% for exchange in exchanges %}
+	<tr>
+		<td> {{ exchange.hostName}} </td>
+		<td> {{exchange.guestName}} </td>
+		<td> {{exchange.guestClub}} </td>
+		<td> {{exchange.breakfast}} </td>
+		<td> {{exchange.lunch}} </td>
+		<td> {{exchange.dinner}} </td>
+		<td> {{exchange.month.month}} </td>
+	</tr>
+	{% endfor %}
+	{% else %}
+    <p>No exchanges available.</p>
+	{% endif %}
 </body>
 </HTML>
