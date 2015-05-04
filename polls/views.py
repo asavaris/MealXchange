@@ -71,7 +71,7 @@ def LogIn(request):
                     return HttpResponse("The password is valid, but the account has been disabled!")
         else:
             # the authentication system was unable to verify the username and password
-            return render(request, 'error.html')
+            return render(request, 'error.html', {'message': "Login failed"})
     else:
         form = AuthenticationForm()
 
@@ -99,22 +99,22 @@ def Exchange(request):
                 guestObject = Members.objects.get(netID=str(guest))
             except:
                 print "Guest Object not found"
-                return render(request, 'errorExchange.html')
+                return render(request, 'error.html', {'message': "Guest netid not found"})
             try:
                 print "host is"
                 hostObject = Members.objects.get(netID=str(host))
             except:
                 print "Host Object not found"
-                return render(request, 'errorExchange.html')
+                return render(request, 'error.html', {'message': "Host netid not found"})
 
             if (str(request.user) != hostObject.club):
                 print "%s != %s"%(str(request.user), str(hostObject.club))
-                return render(request, 'error.html')
+                return render(request, 'error.html', {'message': "Host is not a member of this club"})
 
             meal = whichMeal(request, datetime.now())
 
             if (hostObject.club == guestObject.club):
-                return render(request, 'error.html')
+                return render(request, 'error.html', {'message': "Host and guest can't be from same club"})
             #a = Exchanges(hostName = host, guestName = guest, hostClub = str(request.user), guestClub = guestObject.club, month = datetime.now())
             #a.save()
 
@@ -197,7 +197,7 @@ def Guest(request):
 
             return HttpResponseRedirect("../Thanks/")
         else:
-            return render(request, 'errorGuest.html')
+            return render(request, 'error.html', {'message': "Error registering guest"})
     else:
         form = GuestForm()
 
@@ -237,7 +237,7 @@ def ViewExchanges(request):
             return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
         else:
             print "invalid form"
-            return render(request, 'errorViewExchanges.html')
+            return render(request, 'error.html', {'message': "Error loading the form"})
     else:
         print "form empty"
         form = ViewExchangesForm()
@@ -263,7 +263,7 @@ def handleClubPrefs(request):
             print ClubPrefs.objects.all()
             return HttpResponseRedirect("../SavedChanges")
         else:
-            return render(request, 'errorClubPreferences.html')
+            return render(request, 'error.html', {'message': "You didn't fill out all the preferences!"})
     else:
         form = ClubPrefsForm()
 
@@ -293,7 +293,7 @@ def EditMembership(request):
         select_objects = Members.objects.filter(netID__in=selected)
         print "SELECTED OBJECTS"
         print select_objects
-        return HttpResponse("It worked")
+        return HttpResponseRedirect("../Home/")
     else:
         print request
         table = SimpleTable(members)
@@ -372,5 +372,5 @@ def Confirmation(request, anystring=None):
                 exchangeGuestObject.save()
 
             c.delete()
-        return HttpResponse("Great.")
-    return HttpResponse("that's not valid")
+        return HttpResponseRedirect("../Thanks/")
+    return render(request, 'error.html', {'message': "Error: meal exchange not confirmed"})
