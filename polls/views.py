@@ -274,6 +274,7 @@ def EditMembership(request):
     print "in edit membership"
     membership = Members.objects.filter(club=str(request.user)) 
     members = []
+
     for member in membership:
 
         m = {}
@@ -293,6 +294,8 @@ def EditMembership(request):
         select_objects = Members.objects.filter(netID__in=selected)
         print "SELECTED OBJECTS"
         print select_objects
+        for item in select_objects:
+            item.delete()
         return HttpResponseRedirect("../Home/")
     else:
         print request
