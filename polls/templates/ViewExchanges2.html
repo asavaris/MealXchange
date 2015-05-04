@@ -17,7 +17,7 @@
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../../static/css/home.css" rel="stylesheet">
+    <link href="../../static/css/ViewExchanges.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="../../static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -32,7 +32,7 @@
 
 </head>
 
-<body>
+<body style="background-color: orange">
 
     <!-- Navigation -->
     <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
@@ -68,19 +68,39 @@
     </nav>
 
     <!-- Header -->
-    <header id="top" class="header">
-        <div class="text-vertical-center">
-            <h2>What would you like to do?</h2>
-            <br>
-            <a href="../Exchange" class="btn btn-lighter btn-lg">Sign up for a meal exchange</a>
-            <!-- <a href="/Xchange/Home/Exchange/" class="btn btn-lighter btn-lg">Perform a meal exchange</a> -->
-            <br>
-            <br>
-            <a href="../Guest" class="btn btn-lighter btn-lg">Sign up to host a guest</a>
-            <!-- <a href="/Xchange/Home/Guest/" class="btn btn-lighter btn-lg">Host a guest</a> -->
-            <br>
-        </div>
-    </header>
+<div style="background-color: orange">
+<form action="/Xchange/ViewExchanges/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+<br></br>
+<table>
+    <tr>
+        <th> Host </th>
+        <th> Guest </th>
+        <th> Guest club </th>
+        <th> Breakfast </th>
+        <th> Lunch </th>
+        <th> Dinner </th>
+        <th> Month </th>
+    </tr>
+    {% if exchanges %}
+    {% for exchange in exchanges %}
+    <tr>
+        <td> {{ exchange.hostName}} </td>
+        <td> {{exchange.guestName}} </td>
+        <td> {{exchange.guestClub}} </td>
+        <td> {{exchange.breakfast}} </td>
+        <td> {{exchange.lunch}} </td>
+        <td> {{exchange.dinner}} </td>
+        <td> {{exchange.month.month}} </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <p>No exchanges available.</p>
+    {% endif %}
+</div>
 
     <!-- jQuery -->
     <script src="../../static/js/jquery.js"></script>
@@ -120,24 +140,8 @@
     });
     </script>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 col-lg-offset-1 text-center">
-                    <h4><strong>MealXchange</strong>
-                    </h4>
-                    <p>Asavari Sinha<br>Ava Chen<br>Louis Guerra<br>Michael Buono<br>Paco Avila</p>
-                    <ul class="list-unstyled">
-                        <li><i class="fa fa-envelope-o fa-fw"></i>  <a href="mailto:name@example.com">mbuono@princeton.edu</a>
-                        </li>
-                    </ul>
-                    <hr class="small">
-                    <p class="text-muted">Copyright &copy; MealXchange 2015</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+ 
 </body>
+
 
 </html>

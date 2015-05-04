@@ -233,7 +233,8 @@ def ViewExchanges(request):
             print f
             # return SearchExchanges(request, f['netid'])
             exchanges = Exchanges.objects.filter( Q(hostClub=request.user) & Q(hostName=f['netid']) )
-            return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
+            # return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
+            return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
         else:
             print "invalid form"
             return render(request, 'errorViewExchanges.html')
@@ -241,7 +242,8 @@ def ViewExchanges(request):
         print "form empty"
         form = ViewExchangesForm()
 
-    return render(request, 'ViewExchanges.html', {'form': form, 'exchanges' : exchanges})    
+    return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
+    # return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})    
 
 @login_required(redirect_field_name = None)
 def handleClubPrefs(request):
@@ -294,12 +296,12 @@ def EditMembership(request):
         return HttpResponse("It worked")
     else:
         print request
-        print "we'rre in the esle"
         table = SimpleTable(members)
         RequestConfig(request).configure(table)
 
 
-    return render(request, 'EditMembership2.html', {'table': table})
+    #return render(request, 'EditMembership2.html', {'table': table})
+    return render(request, 'ViewMembership.html', {'table': table})
 
 def Confirmation(request, anystring=None):
     print "Confirmation"
