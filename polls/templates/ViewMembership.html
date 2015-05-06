@@ -71,6 +71,12 @@
     <header id="top" class="header">
         <br></br>
 
+        <form action="/Xchange/EditMembership/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="addMember" />
+        </form>
+
         <div style="text-align: center">
         <form action="/Xchange/EditMembership/" method="post">
 
@@ -83,6 +89,7 @@
     </div>
     <br></br>
 
+    <a href="/Xchange/AddMembers/" class="btn btn-lighter btn-lg">Add Members</a>
     </header>
 
 

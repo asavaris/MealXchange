@@ -8,7 +8,7 @@ import os
 import webbrowser
 from time import sleep
 from django.contrib.sessions.models import Session
-from .forms import ExchangeForm, ClubPrefsForm, ViewExchangesForm, EditMembershipForm, GuestForm
+from .forms import ExchangeForm, ClubPrefsForm, ViewExchangesForm, AddMembersForm, EditMembershipForm, GuestForm
 from django import forms
 from datetime import datetime
 from django.contrib.auth import authenticate
@@ -24,6 +24,101 @@ from django.core.mail import send_mail, EmailMessage
 import random, string
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+import xlwt
+
+
+
+def createCSV(clubName):
+    style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on',
+        num_format_str='#,##0.00')
+    style1 = xlwt.easyxf(num_format_str='D-MMM-YY')
+
+    wb = xlwt.Workbook()
+
+    # create sheets
+    memList = wb.add_sheet('MemberList')
+    exchanges = wb.add_sheet('Exchanges')
+
+    # get member list for a club
+    memberList = Members.objects.filter(club=clubName)
+    memberList = memberList.extra(order_by=['name'])
+
+    # get all exchanges where a member of this club is a host
+    exchangeList = Exchanges.objects.filter(hostClub = clubName)
+    exchangeList = exchangeList.extra(order_by=['hostName'])
+
+    added_exchanges = {}
+    for e in exchangeList:
+        # if not in dictionary already, add it
+        if e.hostName not in added_exchanges:
+            member = Members.objects.get(netID=e.hostName)
+            added_exchanges[e.hostName] = [member.name, e.breakfast, e.brunch, e.lunch, e.dinner]
+
+        # if already in, we add to the values 
+        else:
+            old_values = added_exchanges[e.hostName]
+            added_exchanges[e.hostName] = [old_values[0], old_values[1] + e.breakfast, old_values[2] + e.brunch, old_values[3] + e.lunch, old_values[4] + e.dinner]
+
+
+    # sort the added_exchanges by name
+    sorted_exchanges = sorted(added_exchanges.items(), key=lambda e: e[1][0])
+
+
+
+    # now we can write to the excel file
+
+
+    # member list
+    memList.write(0, 0, "Members")
+    for i in range(0, len(memberList)):
+        memList.write(i+1, 0, memberList[i].name)
+        memList.write(i+1, 1, memberList[i].netID)
+        memList.write(i+1, 2, memberList[i].year)
+
+    # exchange list
+    exchanges.write(0, 0, "Member Name")
+    exchanges.write(0, 1, "netID")
+    exchanges.write(0, 2, "Outstanding Breakfasts")
+    exchanges.write(0, 3, "Outstanding Brunches")
+    exchanges.write(0, 4, "Outstanding Lunches")
+    exchanges.write(0, 5, "Outstanding Dinners")
+
+    print sorted_exchanges
+
+    for i in range(0, len(sorted_exchanges)):
+        exchanges.write(i+1, 0, str(sorted_exchanges[i][1][0]))
+        exchanges.write(i+1, 1, str(sorted_exchanges[i][0]))
+        exchanges.write(i+1, 2, str(sorted_exchanges[i][1][1]))
+        exchanges.write(i+1, 3, str(sorted_exchanges[i][1][2]))
+        exchanges.write(i+1, 4, str(sorted_exchanges[i][1][3]))
+        exchanges.write(i+1, 5, str(sorted_exchanges[i][1][4]))
+
+
+
+
+
+
+
+    # for i in range(0, len(clubs)):
+    #     ws.write(0, i, clubs[i])
+
+    # for i in range (0, len(clubsMembers)):
+    #     for j in range(0, len(clubsMembers[0])):
+    #         ws.write(i + 1, j, clubsMembers[i][j])
+
+    #ws.write(0, 0, 1234.56, style0)
+    #ws.write(1, 0, datetime.now(), style1)
+    #ws.write(2, 0, 1)
+    #ws.write(2, 1, 1)
+    #ws.write(2, 2, xlwt.Formula("A3+B3"))
+
+    wb.save('example2.xls')
+    return wb
+
+
+
+
+
 
 def id_generator(size):
     l = ["filler"]
@@ -80,7 +175,101 @@ def LogIn(request):
 #@login_required(login_url = '/account/login/')
 @login_required(redirect_field_name = None)
 def Home(request):
+
+    # check month, if the month is new, we reset everyone's guest meals
+    try:
+        clubPrefs = ClubPrefs.objects.get(club_name=request.user)
+    except:
+        return HttpResponseRedirect('../ClubPrefs')
+
+    if (datetime.today().month != clubPrefs.last_login):
+        # reset everyone's guest meals
+        members = Members.objects.filter(club=request.user)
+        for member in members:
+            member.numguests = clubPrefs.max_guests
+            member.save()
+
+        clubPrefs.last_login = datetime.today().month
+        clubPrefs.save()
+
     return render(request, 'home.html')
+
+
+@login_required(redirect_field_name = None)
+def DownloadLink(request):
+    clubName = request.user
+
+    style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on',
+        num_format_str='#,##0.00')
+    style1 = xlwt.easyxf(num_format_str='D-MMM-YY')
+
+    wb = xlwt.Workbook()
+
+    # create sheets
+    memList = wb.add_sheet('MemberList')
+    exchanges = wb.add_sheet('Exchanges')
+
+    # get member list for a club
+    memberList = Members.objects.filter(club=clubName)
+    memberList = memberList.extra(order_by=['name'])
+
+    # get all exchanges where a member of this club is a host
+    exchangeList = Exchanges.objects.filter(hostClub = clubName)
+    exchangeList = exchangeList.extra(order_by=['hostName'])
+
+    added_exchanges = {}
+    for e in exchangeList:
+        # if not in dictionary already, add it
+        if e.hostName not in added_exchanges:
+            member = Members.objects.get(netID=e.hostName)
+            added_exchanges[e.hostName] = [member.name, e.breakfast, e.brunch, e.lunch, e.dinner]
+
+        # if already in, we add to the values 
+        else:
+            old_values = added_exchanges[e.hostName]
+            added_exchanges[e.hostName] = [old_values[0], old_values[1] + e.breakfast, old_values[2] + e.brunch, old_values[3] + e.lunch, old_values[4] + e.dinner]
+
+
+    # sort the added_exchanges by name
+    sorted_exchanges = sorted(added_exchanges.items(), key=lambda e: e[1][0])
+
+
+
+    # now we can write to the excel file
+
+
+    # member list
+    memList.write(0, 0, "Members")
+    for i in range(0, len(memberList)):
+        memList.write(i+1, 0, memberList[i].name)
+        memList.write(i+1, 1, memberList[i].netID)
+        memList.write(i+1, 2, memberList[i].year)
+
+    # exchange list
+    exchanges.write(0, 0, "Member Name")
+    exchanges.write(0, 1, "netID")
+    exchanges.write(0, 2, "Outstanding Breakfasts")
+    exchanges.write(0, 3, "Outstanding Brunches")
+    exchanges.write(0, 4, "Outstanding Lunches")
+    exchanges.write(0, 5, "Outstanding Dinners")
+
+    print sorted_exchanges
+
+    for i in range(0, len(sorted_exchanges)):
+        exchanges.write(i+1, 0, str(sorted_exchanges[i][1][0]))
+        exchanges.write(i+1, 1, str(sorted_exchanges[i][0]))
+        exchanges.write(i+1, 2, str(sorted_exchanges[i][1][1]))
+        exchanges.write(i+1, 3, str(sorted_exchanges[i][1][2]))
+        exchanges.write(i+1, 4, str(sorted_exchanges[i][1][3]))
+        exchanges.write(i+1, 5, str(sorted_exchanges[i][1][4]))
+
+
+
+    wb.save('example2.xls')
+    f = open('example2.xls', 'rw')
+    response = HttpResponse(f)
+    response['Content-Disposition'] = 'attachment; filename="example2.xls"'
+    return response
 
 @login_required(redirect_field_name = None)
 def Exchange(request):
@@ -195,6 +384,25 @@ def Guest(request):
             global host 
             host = form.cleaned_data['host_name']
 
+            # if host name not in host club, error
+            try:
+                member = Members.objects.get(netID=host)
+            except:
+                print ("couldnt find a member")
+                return render(request, 'error.html', {'message': "Invalid host netID"})
+
+            if (str(member.club) != str(request.user)):
+                print("member club: " + str(member.club))
+                print("request.user: " + str(request.user))
+                return render(request, 'error.html', {'message': "Host not a member of this club"})
+
+            # if they're out
+            if (member.numguests < 1):
+                return render(request, 'error.html', {'message': "You're out of guest meals! Lol go eat at a Dining Hall"})
+
+            member.numguests -= 1
+            member.save()
+
             return HttpResponseRedirect("../Thanks/")
         else:
             return render(request, 'error.html', {'message': "Error registering guest"})
@@ -233,6 +441,8 @@ def ViewExchanges(request):
             print f
             # return SearchExchanges(request, f['netid'])
             exchanges = Exchanges.objects.filter( Q(hostClub=request.user) & Q(hostName=f['netid']) )
+
+            exchanges = exchanges.extra(order_by=['hostName'])
             # return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
             return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
         else:
@@ -243,7 +453,7 @@ def ViewExchanges(request):
         form = ViewExchangesForm()
 
     return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
-    # return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})    
+    # return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})  
 
 @login_required(redirect_field_name = None)
 def handleClubPrefs(request):
@@ -257,7 +467,7 @@ def handleClubPrefs(request):
             previousEntries = ClubPrefs.objects.filter(club_name=str(request.user)).delete()
 
             c = ClubPrefs(b_start=f['b_start'], l_start=f['l_start'], d_start=f['d_start'], br_start=f['br_start'],
-            b_end=f['b_end'], l_end=f['l_end'], d_end=f['d_end'], br_end=f['br_end'], max_guests=f['max_guests'], club_name=str(request.user))
+            b_end=f['b_end'], l_end=f['l_end'], d_end=f['d_end'], br_end=f['br_end'], max_guests=f['max_guests'], club_name=str(request.user), last_login=datetime.today().month)
             
             c.save()
             print ClubPrefs.objects.all()
@@ -272,7 +482,10 @@ def handleClubPrefs(request):
 @login_required(redirect_field_name = None)
 def EditMembership(request):
     print "in edit membership"
+
     membership = Members.objects.filter(club=str(request.user)) 
+
+    membership = membership.extra(order_by=['name'])
     members = []
 
     for member in membership:
@@ -285,19 +498,17 @@ def EditMembership(request):
 
     print members
     if request.method == "POST":
-        print request
-        print "its a post method"
-        # table = SimpleTable(members)
-        # RequestConfig(request).configure(table)
-        
+        print "IN ELSE STATMENT"
+
         selected = request.POST.getlist("Amend")
         select_objects = Members.objects.filter(netID__in=selected)
         print "SELECTED OBJECTS"
         print select_objects
         for item in select_objects:
             item.delete()
-        return HttpResponseRedirect("../Home/")
+        return HttpResponseRedirect('../EditMembership')
     else:
+        print "adding a prefix"
         print request
         table = SimpleTable(members)
         RequestConfig(request).configure(table)
@@ -305,6 +516,63 @@ def EditMembership(request):
 
     #return render(request, 'EditMembership2.html', {'table': table})
     return render(request, 'ViewMembership.html', {'table': table})
+
+def AddMembers(request):
+    try:
+        clubPrefs = ClubPrefs.objects.get(club_name=request.user)
+    except: 
+        return HttpResponseRedirect('../ClubPrefs')
+
+    max_guests = clubPrefs.max_guests
+    club = request.user
+
+    if request.method == 'POST':
+        addMembers = AddMembersForm(request.POST)
+
+        if addMembers.is_valid():
+            f = addMembers.cleaned_data
+            print f
+            
+            # do stuf
+            f = addMembers.cleaned_data
+            names = re.split('\s*,\s*', str(f['names']))
+            # names = re.split(',', str(f['names']))
+            # netIDs = re.split(',', str(f['netIDs']))
+
+            netIDs = re.split('\s*,\s*', str(f['netIDs']))
+            year = f['year']
+
+            # for name in names:
+            #     if re.match("\s*", name):
+            #         print "removing name"
+            #         names.remove(name)
+
+            # for netID in netIDs:
+            #     if re.match("\s*", netID):
+            #         print "removing netID"
+            #         netIDs.remove(netID)
+
+            # have to have same amount of names and netIDS
+            if len(names) != len(netIDs):
+                return render(request, 'error.html', {'message': "Need same number of names and netIDs"})
+
+            print "for loop for adding members"
+            print "names: " + str(names)
+            print "netids: " + str(netIDs)
+            count = 0
+            for netID in netIDs:
+                m = Members(name=names[count], netID=netID, year=year, numguests=max_guests, club=club)
+                print "saving a member"
+                m.save()
+                count += 1
+
+            return HttpResponseRedirect("../EditMembership")
+        else:
+            return render(request, 'error.html', {'message': "Error adding members."})
+    else:
+        addMembers = AddMembersForm()
+
+    return render(request, 'AddMembers.html', {'form': addMembers})
 
 def Confirmation(request, anystring=None):
     print "Confirmation"

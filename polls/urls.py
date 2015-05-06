@@ -19,8 +19,11 @@ urlpatterns = [
     url(r'^(?i)ClubPrefs/$', views.handleClubPrefs, name='handleClubPrefs'),
     url(r'^(?i)SavedChanges/$', views.SavedChanges, name='SavedChanges'), 
     url(r'^(?i)EditMembership/$', views.EditMembership, name='EditMembership'),
+    url(r'^(?i)AddMembers/$', views.AddMembers, name='AddMembers'),
     url(r'^(?i)Confirmation/(?P<anystring>.+)$', views.Confirmation, name='Confirmation'),
-    
+    url(r'^(?i)Download/$', views.DownloadLink, name='DownloadLink'),
+
+
 ]
 
 

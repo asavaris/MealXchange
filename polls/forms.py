@@ -49,6 +49,11 @@ class EditMembershipForm(forms.Form):
 	name = 	forms.CharField(label='Member name', max_length = 20, required=True, initial="Name")
 	year = forms.IntegerField(label="Member year", required = True, initial=2016)
 
+class AddMembersForm(forms.Form):
+	names = forms.CharField(label='Names (Comma Separated)', max_length = 4000, required = True, initial="name1,name2")
+	netIDs = forms.CharField(label='netIDs (Comma Separated)', max_length = 4000, required = True, initial="netID1,netID2")
+	year = forms.IntegerField(label="Members' year", required = True, initial=2016)
+
 class row(forms.Form):
 	check = forms.BooleanField(label="", required=False)
 
