@@ -8,7 +8,7 @@ import os
 import webbrowser
 from time import sleep
 from django.contrib.sessions.models import Session
-from .forms import ExchangeForm, ClubPrefsForm, ViewExchangesForm, AddMembersForm, EditMembershipForm, GuestForm
+from .forms import ExchangeForm, ClubPrefsForm, ViewExchangesForm, AddMembersForm, EditMembershipForm, GuestForm, ViewMembersForm
 from django import forms
 from datetime import datetime
 from django.contrib.auth import authenticate
@@ -26,7 +26,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 import xlwt
 
-
+global old_search
+old_search = []
 
 def createCSV(clubName):
     style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on',
@@ -233,7 +234,7 @@ def LogIn(request):
 
     # return HttpResponse("this is the club log in page")
     if request.method == 'POST':
-        form = AuthenticationForm(request.POST)
+        form = AuthenticationForm(request.POST, label_suffix='')
         # check whether it's valid:
         if form.is_valid():
             f = form.cleaned_data
@@ -252,7 +253,7 @@ def LogIn(request):
             # the authentication system was unable to verify the username and password
             return render(request, 'error.html', {'message': "Login failed"})
     else:
-        form = AuthenticationForm()
+        form = AuthenticationForm(label_suffix='')
 
     return render(request, 'login.html', {'form': form})
 
@@ -359,7 +360,7 @@ def DownloadLink(request):
 def Exchange(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = ExchangeForm(request.POST)
+        form = ExchangeForm(request.POST, label_suffix='')
         # check whether it's valid:
         if form.is_valid():
             global host 
@@ -424,7 +425,7 @@ def Exchange(request):
             print("form isnt valid \n")
             return render(request, 'errorExchange.html')
     else:
-        form = ExchangeForm()
+        form = ExchangeForm(label_suffix='')
 
     return render(request, 'exchange.html', {'form': form})
 
@@ -462,7 +463,7 @@ def whichMeal(request, date_time):
 def Guest(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = GuestForm(request.POST)
+        form = GuestForm(request.POST, label_suffix='')
         # check whether it's valid:
         if form.is_valid():
             global host 
@@ -491,7 +492,7 @@ def Guest(request):
         else:
             return render(request, 'error.html', {'message': "Error registering guest"})
     else:
-        form = GuestForm()
+        form = GuestForm(label_suffix='')
 
     return render(request, 'guest.html', {'form': form})
 
@@ -519,7 +520,7 @@ def ViewExchanges(request):
     # print "exchanges2"
     # print exchanges2
     if request.method == 'POST': 
-        form = ViewExchangesForm(request.POST)
+        form = ViewExchangesForm(request.POST, label_suffix='')
         if form.is_valid():
             f = form.cleaned_data
             print f
@@ -534,7 +535,7 @@ def ViewExchanges(request):
             return render(request, 'error.html', {'message': "Error loading the form"})
     else:
         print "form empty"
-        form = ViewExchangesForm()
+        form = ViewExchangesForm(label_suffix='')
 
     return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
     # return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})  
@@ -544,7 +545,7 @@ def handleClubPrefs(request):
     oldPrefs = ClubPrefs.objects.get(club_name=request.user)
     if request.method == 'POST':
 
-        form = ClubPrefsForm(request.POST, oldPrefs=oldPrefs)
+        form = ClubPrefsForm(request.POST, oldPrefs=oldPrefs, label_suffix='')
         print "in post"
         if form.is_valid():
             f = form.cleaned_data
@@ -561,7 +562,7 @@ def handleClubPrefs(request):
         else:
             return render(request, 'error.html', {'message': "You didn't fill out all the preferences!"})
     else:
-        form = ClubPrefsForm(oldPrefs=oldPrefs)
+        form = ClubPrefsForm(oldPrefs=oldPrefs, label_suffix='')
 
     return render(request, 'clubprefs.html', {'form': form})
 
@@ -584,24 +585,74 @@ def EditMembership(request):
 
     print members
     if request.method == "POST":
-        print "IN ELSE STATMENT"
 
-        selected = request.POST.getlist("Amend")
-        select_objects = Members.objects.filter(netID__in=selected)
-        print "SELECTED OBJECTS"
-        print select_objects
-        for item in select_objects:
-            item.delete()
-        return HttpResponseRedirect('../EditMembership')
+        print "In POST"
+        print request.POST
+        form = ViewMembersForm(request.POST, label_suffix='')
+
+        if request.POST.get('delete'):
+            selected = request.POST.getlist("Amend")
+            select_objects = Members.objects.filter(netID__in=selected)
+            print "SELECTED OBJECTS"
+            print select_objects
+            for item in select_objects:
+                item.delete()
+
+        if request.POST.get('delete_all'):
+            print old_search
+
+            if len(old_search) == 0:
+                old_search = members
+
+            print "old_search"
+            print old_search
+            for m in old_search:
+                tmp = Members.objects.filter(netID=m['netID'])
+                print tmp
+                tmp.delete()
+
+        membership = Members.objects.filter(club=str(request.user)) 
+
+        membership = membership.extra(order_by=['name'])
+        members = []
+
+        for member in membership:
+
+            m = {}
+            m["netID"] = member.netID
+            m["name"] = member.name
+            m["year"] = member.year
+            members.append(m)
+
+        if request.POST.get('search'):
+            
+            if form.is_valid():
+                f = form.cleaned_data
+
+                if f['netID'] != 'netID' and f['netID'] != "":
+                    members = [x for x in members if x['netID'] == f['netID']]
+                if f['name'] != 'Name' and f['name'] != "":
+                    members = [x for x in members if re.search(f['name'], x['name']) is not None]
+                if f['year'] is not None:
+                    if int(f['year']) >= 2013:
+                        members = [x for x in members if x['year'] == f['year']]
+                global old_search
+                old_search = members
+
+        table = SimpleTable(members)
+        RequestConfig(request).configure(table)
+
+        return render(request, 'ViewMembership.html', {'table': table, 'form': form})
     else:
         print "adding a prefix"
         print request
         table = SimpleTable(members)
+        form = ViewMembersForm(label_suffix='')
         RequestConfig(request).configure(table)
 
 
     #return render(request, 'EditMembership2.html', {'table': table})
-    return render(request, 'ViewMembership.html', {'table': table})
+    return render(request, 'ViewMembership.html', {'table': table, 'form': form})
 
 def AddMembers(request):
     try:
@@ -613,7 +664,7 @@ def AddMembers(request):
     club = request.user
 
     if request.method == 'POST':
-        addMembers = AddMembersForm(request.POST)
+        addMembers = AddMembersForm(request.POST, label_suffix='')
 
         if addMembers.is_valid():
             f = addMembers.cleaned_data
@@ -656,7 +707,7 @@ def AddMembers(request):
         else:
             return render(request, 'error.html', {'message': "Error adding members."})
     else:
-        addMembers = AddMembersForm()
+        addMembers = AddMembersForm(label_suffix='')
 
     return render(request, 'AddMembers.html', {'form': addMembers})
 

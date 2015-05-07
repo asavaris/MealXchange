@@ -69,25 +69,38 @@
 
     <!-- Header -->
     <header id="top" class="header">
+
+
         <br></br>
+        <form action="/Xchange/EditMembership/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Search" name="search"/>
+        <!-- <input type="submit" value="Add" /> -->
+        </form>
 
-
-
+        <br></br>
         <div style="text-align: center">
         <form action="/Xchange/EditMembership/" method="post">
 
         {% load render_table from django_tables2 %}
         {% render_table table %}
         {% csrf_token %}
-        <input type="submit" value="Delete" class="btn btn-lighter btn-lg" />
+        <input type="submit" value="Delete" name="delete" style="position:fixed; bottom:20%; right:65%; width: 15%" class="btn btn-lighter btn-s" />
         <!-- <input type="submit" value="Add" /> -->
         </form>
-    </div>
+    
     <br></br>
+    <form action="/Xchange/EditMembership/" method="post">
+            {% csrf_token %}
 
-    <div style="text-align: center">
-    <a href="/Xchange/AddMembers/" class="btn btn-lighter btn-lg">Add Members</a>
-</div>
+    <input type="submit" value="Delete All" name="delete_all" style="position:fixed; bottom:20%; width: 15%; right: 45%" class="btn btn-lighter btn-s"/>
+    </form>
+
+       <br></br>
+
+            <a href="/Xchange/AddMembers/" class="btn btn-lighter btn-s" style="position:fixed; width: 15%; bottom:20%; right:25%">Add Members</a>
+        </div>
     </header>
 
 

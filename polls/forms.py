@@ -67,12 +67,14 @@ class ViewExchangesForm(forms.Form):
 
 class ViewMembersForm(forms.Form):
 	# ll = forms.BooleanField(label='Member netid', required=False)
-    match = forms.CharField(label='Member netid', max_length = 20, required=False)
+    name = forms.CharField(label='Name', max_length = 50, required=False, initial='Name')
+    netID = forms.CharField(label='netID', max_length = 50, required=False, initial='netID')
+    year = forms.IntegerField(label='Year', required=False, initial=2016)
 
 class EditMembershipForm(forms.Form):
-	netid = forms.CharField(label='Member netid', max_length = 20, required=True, initial="NetID")
-	name = 	forms.CharField(label='Member name', max_length = 20, required=True, initial="Name")
-	year = forms.IntegerField(label="Member year", required = True, initial=2016)
+	netID = forms.CharField(label='NetID', max_length = 20, required=True, initial="netID")
+	name = 	forms.CharField(label='Name', max_length = 20, required=True, initial="Name")
+	year = forms.IntegerField(label="Year", required = True, initial=2016)
 
 class AddMembersForm(forms.Form):
 	names = forms.CharField(label='Names (Comma Separated)', max_length = 4000,
