@@ -230,7 +230,7 @@ def send_guest_email(link, netid):
     'guestBrunch': outstanding['guestBrunch'],
     'guestLunch': outstanding['guestLunch'],
     'guestDinner': outstanding['guestDinner'],
-    'guest': outstanding['guest'] - 1,
+    'guest': outstanding['guest'],
     'youUnconfirmed': outstanding['youUnconfirmed'],
     'otherUnconfirmed': outstanding['otherUnconfirmed']
     }
@@ -835,7 +835,7 @@ def GuestConfirmation(request, anystring=None):
         member = Members.objects.get(netID=c.host)
         print "Member we got:"
         print member
-        
+
         if c.hostHasConfirmed:
             print "guest confirmed"
             member.numguests -= 1
