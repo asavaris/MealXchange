@@ -148,8 +148,12 @@ def calculateOutstanding(netid):
 
 
     # unconfirmed exchanges
-    unconfirmed = ConfirmExchange.objects.filter(host)
-
+    unconfirmed = ConfirmExchange.objects.filter(host=netid)
+    for confirmExchange in unconfirmed:
+        if confirmExchange.hostHasConfirmed:
+            otherUnconfirmed += 1
+        else:
+            youUnconfirmed += 1
 
     outstanding = {
     'hostBreakfast': hostBreakfast,
@@ -187,7 +191,10 @@ def send_email_plz(link, netid):
     'guestBreakfast': outstanding['guestBreakfast'],
     'guestBrunch': outstanding['guestBrunch'],
     'guestLunch': outstanding['guestLunch'],
-    'guestDinner': outstanding['guestDinner']
+    'guestDinner': outstanding['guestDinner'],
+    'guest': outstanding['guest'],
+    'youUnconfirmed': outstanding['youUnconfirmed'],
+    'otherUnconfirmed': outstanding['otherUnconfirmed']
     }
 
     message_text = render_to_string('confirm3.txt', ctx)

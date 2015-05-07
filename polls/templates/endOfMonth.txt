@@ -1,6 +1,5 @@
 Hello {{ user }},
 
-
 You have:
 
 Hosted {{ hostBreakfast }} unfulfilled breakfast exchanges,
