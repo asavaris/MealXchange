@@ -428,8 +428,8 @@ def Exchange(request):
 
             print confirm
 
-            host_signup_link = "52.10.59.32:8000/Xchange/Confirmation/" + confirm.hostConfirmString
-            guest_signup_link = "52.10.59.32:8000/Xchange/Confirmation/" + confirm.guestConfirmString
+            host_signup_link = "princeton-mealxchange.com:8000/Xchange/Confirmation/" + confirm.hostConfirmString
+            guest_signup_link = "princeton-mealxchange.com:8000/Xchange/Confirmation/" + confirm.guestConfirmString
 
 
             print "host signup link: " + host_signup_link
@@ -513,7 +513,7 @@ def Guest(request):
             confirm = ConfirmGuest(hostConfirmString=host_id, hostHasConfirmed=False, host = host)
             confirm.save()
 
-            host_signup_link = "52.10.59.32:8000/Xchange/GuestConfirmation/" + confirm.hostConfirmString
+            host_signup_link = "princeton-mealxchange.com:8000/Xchange/GuestConfirmation/" + confirm.hostConfirmString
 
             send_guest_email(host_signup_link, host)
 
