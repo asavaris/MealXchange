@@ -661,9 +661,9 @@ def EditMembership(request):
             if form.is_valid():
                 f = form.cleaned_data
 
-                if f['netID'] != 'netID' and f['netID'] != "":
+                if f['netID'] is not None and f['netID'] != "":
                     members = [x for x in members if x['netID'] == f['netID']]
-                if f['name'] != 'Name' and f['name'] != "":
+                if f['name'] is not None and f['name'] != "":
                     members = [x for x in members if re.search(f['name'], x['name']) is not None]
                 if f['year'] is not None:
                     if int(f['year']) >= 2013:
@@ -828,17 +828,18 @@ def GuestConfirmation(request, anystring=None):
             hc[0].save()
             c = hc[0]
         else:
+            print "confirmation failed"
             return render(request, 'error.html', {'message': "Confirmation failed"})
 
         # get the member
         member = Members.objects.get(netID=c.host)
-
-
+        print "Member we got:"
+        print member
         
-
         if c.hostHasConfirmed:
             print "guest confirmed"
             member.numguests -= 1
+            member.save()
             c.delete()
         return HttpResponseRedirect("../Thanks/")
     return render(request, 'error.html', {'message': "Error: meal exchange not confirmed"})

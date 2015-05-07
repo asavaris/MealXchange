@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Princeton MealXchange - Home</title>
+    <title>Princeton MealXchange - View Exchanges</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
@@ -68,14 +68,14 @@
     </nav>
 
     <!-- Header -->
+<div style="margin:15px">
 <form action="/Xchange/ViewExchanges/" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" />
 </form>
-
-<br></br>
-
+</div>
+<div style="margin:15px">
 <table>
     <tr>
         <th> Host </th>
@@ -102,12 +102,11 @@
     <p>No exchanges available.</p>
     {% endif %}
 </table>
-
+</div>
 <br></br>
 <br></br>
-<div style="text-align: center">  <a href="../Download" class="btn btn-lighter btn-lg" style="align: center">Download .csv</a> </div>
-<br></br>
-<div style="text-align: center">  <a href="../SendEmails" class="btn btn-lighter btn-lg" style="align: center">Send Emails</a> </div>
+<div style="text-align: center">  <a href="../Download" class="btn btn-lighter btn-s" style="align: center; width: 15%; position: fixed; right: 50%">Download .csv</a> </div>
+<div style="text-align: center">  <a href="../SendEmails" class="btn btn-lighter btn-s" style="align: center; width: 15%; position: fixed; right: 30%">Send Emails</a> </div>
 
     <!-- jQuery -->
     <script src="../../static/js/jquery.js"></script>

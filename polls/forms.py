@@ -63,14 +63,14 @@ class ClubPrefsForm(forms.Form):
 
 class ViewExchangesForm(forms.Form):
 	# ll = forms.BooleanField(label='Member netid', required=False)
-    netid = forms.CharField(label='Member netid', max_length = 20, required=False)
+    netid = forms.CharField(label='', max_length = 20, required=False, widget=forms.TextInput(attrs={'placeholder': 'NetID'}))
 
 
 class ViewMembersForm(forms.Form):
 	# ll = forms.BooleanField(label='Member netid', required=False)
-    name = forms.CharField(label='Name', max_length = 50, required=False, initial='Name')
-    netID = forms.CharField(label='netID', max_length = 50, required=False, initial='netID')
-    year = forms.IntegerField(label='Year', required=False, initial=2016)
+    name = forms.CharField(label='\t', max_length = 50, required=False, widget=forms.TextInput(attrs={'placeholder': 'Name'}))
+    netID = forms.CharField(label='\t', max_length = 50, required=False, widget=forms.TextInput(attrs={'placeholder': 'NetID'}))
+    year = forms.IntegerField(label='\t', required=False, widget=forms.TextInput(attrs={'placeholder': 'Year'}))
 
 class EditMembershipForm(forms.Form):
 	netID = forms.CharField(label='NetID', max_length = 20, required=True, initial="netID")
