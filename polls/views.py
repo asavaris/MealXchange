@@ -93,31 +93,8 @@ def createCSV(clubName):
         exchanges.write(i+1, 4, str(sorted_exchanges[i][1][3]))
         exchanges.write(i+1, 5, str(sorted_exchanges[i][1][4]))
 
-
-
-
-
-
-
-    # for i in range(0, len(clubs)):
-    #     ws.write(0, i, clubs[i])
-
-    # for i in range (0, len(clubsMembers)):
-    #     for j in range(0, len(clubsMembers[0])):
-    #         ws.write(i + 1, j, clubsMembers[i][j])
-
-    #ws.write(0, 0, 1234.56, style0)
-    #ws.write(1, 0, datetime.now(), style1)
-    #ws.write(2, 0, 1)
-    #ws.write(2, 1, 1)
-    #ws.write(2, 2, xlwt.Formula("A3+B3"))
-
     wb.save('example2.xls')
     return wb
-
-
-
-
 
 
 def id_generator(size):
@@ -129,20 +106,120 @@ def id_generator(size):
     print s
     return s
 
+def calculateOutstanding(netid):
+
+    exchanges = Exchanges.objects.filter(hostName=netid)
+    member = Members.objects.get(netID=netid)
+
+    hostBreakfast = 0
+    hostBrunch = 0
+    hostLunch = 0
+    hostDinner = 0
+    guestBreakfast = 0
+    guestBrunch = 0
+    guestLunch = 0
+    guestDinner = 0
+    youUnconfirmed = 0
+    otherUnconfirmed = 0
+
+    # confirmed exchanges
+    for exchange in exchanges:
+
+
+        if exchange.breakfast < 0:
+            guestBreakfast += abs(exchange.breakfast)
+        else:
+            hostBreakfast += abs(exchange.breakfast)
+
+        if exchange.brunch < 0:
+            guestBrunch += abs(exchange.brunch)
+        else:
+            hostBrunch += abs(exchange.brunch)
+
+        if exchange.lunch < 0:
+            guestLunch += abs(exchange.lunch)
+        else:
+            hostLunch += abs(exchange.lunch)
+
+        if exchange.dinner < 0:
+            guestDinner += abs(exchange.dinner)
+        else:
+            hostDinner += abs(exchange.dinner)
+
+
+    # unconfirmed exchanges
+    unconfirmed = ConfirmExchange.objects.filter(host)
+
+
+    outstanding = {
+    'hostBreakfast': hostBreakfast,
+    'hostBrunch': hostBrunch,
+    'hostLunch': hostLunch,
+    'hostDinner': hostDinner,
+    'guestBreakfast': guestBreakfast,
+    'guestBrunch': guestBrunch,
+    'guestLunch': guestLunch,
+    'guestDinner': guestDinner,
+    'guest': member.numguests,
+    'youUnconfirmed': youUnconfirmed,
+    'otherUnconfirmed': otherUnconfirmed
+    }
+
+    print "outstanding"
+    print outstanding
+    return outstanding
+
 def send_email_plz(link, netid):
     subject = 'Confirm Meal Exchange'
     email = netid + "@princeton.edu"
     to = [email]
     from_email = settings.DEFAULT_FROM_EMAIL
 
+    outstanding = calculateOutstanding(netid)
+
     ctx = {
     'user': netid,
-    'link': link
+    'link': link,
+    'hostBreakfast': outstanding['hostBreakfast'],
+    'hostBrunch': outstanding['hostBrunch'],
+    'hostLunch': outstanding['hostLunch'],
+    'hostDinner': outstanding['hostDinner'],
+    'guestBreakfast': outstanding['guestBreakfast'],
+    'guestBrunch': outstanding['guestBrunch'],
+    'guestLunch': outstanding['guestLunch'],
+    'guestDinner': outstanding['guestDinner']
     }
 
     message_text = render_to_string('confirm3.txt', ctx)
 
     EmailMessage(subject, message_text, to=to, from_email=from_email).send()
+
+@login_required(redirect_field_name = None)
+def SendEmails(request):
+    # send emails to anyone who has not fulfilled both sides of a meal exchange
+
+    members = Members.objects.filter(club=request.user)
+    for member in members:
+
+        outstanding = calculateOutstanding(member.netID)
+
+        subject = 'Meal Exchange Reminder'
+        to = member.netID + "@princeton.edu"
+
+        ctx = {
+            'user': netid,
+            'hostBreakfast': outstanding['hostBreakfast'],
+            'hostBrunch': outstanding['hostBrunch'],
+            'hostLunch': outstanding['hostLunch'],
+            'hostDinner': outstanding['hostDinner'],
+            'guestBreakfast': outstanding['guestBreakfast'],
+            'guestBrunch': outstanding['guestBrunch'],
+            'guestLunch': outstanding['guestLunch'],
+            'guestDinner': outstanding['guestDinner']
+            }
+
+        message_text = render_to_string('endOfMonth.txt', ctx)
+        EmailMessage(subject, message_text, to=to, from_email=from_email).send()
 
 @login_required(redirect_field_name = None)
 def LogIn(request):
@@ -316,7 +393,7 @@ def Exchange(request):
             exchange_str = "%s, %s, %s"%(name1, name2, meal)
             host_id = id_generator(64)
             guest_id = id_generator(64)
-            confirm = ConfirmExchange(hostConfirmString=host_id, guestConfirmString=guest_id, exchange_str=exchange_str, hostHasConfirmed=False, guestHasConfirmed=False)
+            confirm = ConfirmExchange(hostConfirmString=host_id, guestConfirmString=guest_id, exchange_str=exchange_str, hostHasConfirmed=False, guestHasConfirmed=False, host = name1, guest = name2)
             confirm.save()
 
             print confirm
@@ -457,8 +534,10 @@ def ViewExchanges(request):
 
 @login_required(redirect_field_name = None)
 def handleClubPrefs(request):
+    oldPrefs = ClubPrefs.objects.get(club_name=request.user)
     if request.method == 'POST':
-        form = ClubPrefsForm(request.POST)
+
+        form = ClubPrefsForm(request.POST, oldPrefs=oldPrefs)
         print "in post"
         if form.is_valid():
             f = form.cleaned_data
@@ -475,7 +554,7 @@ def handleClubPrefs(request):
         else:
             return render(request, 'error.html', {'message': "You didn't fill out all the preferences!"})
     else:
-        form = ClubPrefsForm()
+        form = ClubPrefsForm(oldPrefs=oldPrefs)
 
     return render(request, 'clubprefs.html', {'form': form})
 

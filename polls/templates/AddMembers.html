@@ -11,13 +11,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Princeton MealXchange - Club Preferences</title>
+    <title>Princeton MealXchange - Add Members</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../../static/css/clubprefs.css" rel="stylesheet">
+    <link href="../../static/css/addmembers.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="../../static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -69,13 +69,60 @@
    <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <br><br>
-            <h2 style="margin-left:200px;">Club Preferences</h2>
+            <h2 style="margin-left:200px;">Add Members</h2>
             <form action="/Xchange/AddMembers/" method="post">
             {% csrf_token %}
-            {{ form.as_p}}
-            <input type="submit" value="Submit" />
+            <!-- {{ form }} -->
+
+
+            <table align="left" style="margin-left:200px;">
+              <tr>
+
+                <td align="left">
+                    <label for="b_start"> <font color="black"> <font size="4px"> Names (Comma Separated) </font> </label><br><br>
+                </td>
+                <td align="left">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ form.names }}<br><br>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">
+                    <label for="b_end"> <font color="black"> <font size="4px">Net IDs (Comma Separated) </font> </label><br><br>
+
+                </td>
+                <td align="left">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ form.netIDs }}<br><br>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">
+                    <label for="l_start"> <font color="black"> <font size="4px">Year</font> </label><br><br>
+                </td>
+                <td align="left">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ form.year }}<br><br>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">
+                    <br>
+                    <!-- 
+                    <form method="link" action="/Xchange/Home/">
+                        <input type="submit" value="Go Back">
+                    </form>
+                    <input type="submit" value="Save"> 
+                    -->
+                    <input type="submit" value="Submit" />
+                </td>
+                <td align="left">
+                </td>
+              </tr>
+              <br>
+            </table>
         </form>
+            <br><Br><br>
         </div>
     </header>
 

@@ -1,7 +1,5 @@
 Hello {{ user }},
 
-Click here to confirm your MealXchange: 
-{{ link }}
 
 You have:
 
@@ -9,10 +7,15 @@ Hosted {{ hostBreakfast }} unfulfilled breakfast exchanges,
 Hosted {{ hostBrunch }} unfulfilled brunch exchanges,
 Hosted {{ hostLunch }} unfulfilled lunch exchanges,
 Hosted {{ hostDinner }} unfulfilled dinner exchanges,
+
 Been a guest at {{ guestBreakfast }} unfulfilled breakfast exchanges,
 Been a guest at {{ guestBrunch }} unfulfilled brunch exchanges,
 Been a guest at {{ guestLunch }} unfulfilled lunch exchanges, and 
 Been a guest at {{ guestDinner }} unfulfilled dinner exchanges.
+
+You have a total of {{ youUnconfirmed }} unconfirmed exchanges.
+
+You have confirmed a total of {{ otherUnconfirmed }} exchanges that have been unconfirmed by the other person.
 
 You have {{ guest }} guest meals left.
 

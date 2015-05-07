@@ -1,29 +1,12 @@
-- View Exchanges page (Asavari)
-	- Dynamic forms
-- Edit Membership page (Asavari)
-	- Dynamic forms
 
-- Database check and email authentication for exchange/guest netids (Michael)
-	- First check against club database (error.html page if not), then send email verification and wait on it
-- Registration and database tables use club username (Michael)
-	- Change username in account registration to club name
-	- Whenever put entry into database, use club username
-	- How to find guest club's username?
+
+
+
 - End of month emails (Michael?)
 	- Should be easy once we know how to send email
 
-- Login page (Louis?)
-	- Styling (use placeholder)
-	- accounts/login should redirect to whatever page user is trying to visit, not to home page
-	- Style edit registration pages (password reset and accounts register, reached from login page)
 
-- Club Preferences (Ava)
-	- Still making minor fixes
-	- Adding a saved changes page
-- Error pages (Ava)
-	- Add error redirect to all classes in views.py (if !form.is_valid)
-	- In error.html: "go back" literally goes back in history, want to just go to previous link
-	- Possible different error pages to solve above problem
+
 
 - Footer and background image citations (Paco)
 	- Already done, just need to merge changes

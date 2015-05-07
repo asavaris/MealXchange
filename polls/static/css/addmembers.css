@@ -13,9 +13,7 @@ body {
 }
 
 body {
-    background-color: black;
     font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
-    color: #fff;
 }
 
 .text-vertical-center {
@@ -26,23 +24,52 @@ body {
 
 .text-vertical-center h1 {
     margin: 0;
-    padding: 0;
-    font-size: 300%;
+    font-size: 4.5em;
     font-weight: 600;
-    color:#FF8000; 
-    text-shadow: -1.5px -1.5px #000000, 1.5px 1.5px #000000, 1.5px -1.5px #000000, 1.5px -1.5px #000000;
+}
+
+.text-vertical-center h2 {
+    text-align: left;
+    font-size: 250%;
+    font-weight: 600;
+    color: #FF8000;
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: #000;
 }
 
 /* Custom Button Styles */
 
-.btn-dark {
-    border-radius: 0;
-    color: #fff;
+.btn-menu {
     -moz-border-radius: 5px; 
-    -webkit-border-radius: 5px; 
+    -webkit-border-radius: 5px;
+    border-color: #707070;
+    border: 2px solid #707070;
+    color: #fff;
+    font-weight: 500;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.btn-menu:hover,
+.btn-menu:focus,
+.btn-menu:active {
+    color: #fff;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.btn-dark {
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;
     border-color: #ff8000;
     border: 2px solid #ff8000;
-    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    /*text-shadow: -0.5px -0.5px #ff8000, 0.5px 0.5px #ff8000;*/
+    /*font-weight: 50;*/
+    font-size: 15px;
+    padding-top: 1px;
+    padding-bottom: 8px;
+    width: 80px;
+    height: 25px;
+    background-color: #A4A4A4;
 }
 
 .btn-dark:hover,
@@ -51,12 +78,20 @@ body {
     color: #fff;
     background-color: rgba(0,0,0,0.7);
 }
+.btn {
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active {
+}
 
 .btn-light {
     border-radius: 0;
     color: #333;
     background-color: rgb(255,255,255);
 }
+
 
 .btn-light:hover,
 .btn-light:focus,
@@ -94,7 +129,6 @@ hr.small {
     top: 0;
     width: 250px;
     margin: 0;
-    padding: 0;
     list-style: none;
 }
 
@@ -156,6 +190,91 @@ hr.small {
     margin: 5px 5px 0 0;
 }
 
+/*select option {
+    margin:0px;
+    background: rgba(f,f,f,1);
+    color:#000000;
+    width:80px;
+    text-shadow:0 1px 0 rgba(0,0,0,0.4);
+    border-color: 0;
+}
+
+ select {
+  
+   background: rgba(f,f,f,1);
+   width: 100px;
+   font-size: 12pt;
+   color:black;
+   border: 0;
+   border-radius: 0;
+   height: 28px;
+   -webkit-appearance: none;
+    border-color: 0;
+   }
+   .select_join select:focus {
+    outline: none;
+
+}*/
+
+/*select.dropdown {
+     -webkit-appearance: none;       
+     -moz-appearance: none;    
+     appearance: none;
+     background: url('http://www.durhamcollege.ca/wp-content/themes/dc/images/green_download_arrow.png')  no-repeat;         
+     background-position: 22px 3px;                
+     background-size: 13px 13px; 
+     width: 40px;
+     height: 20px;
+     margin-left: 4px;
+}
+
+.dropdown-container {
+     float :left;
+     margin: 0px;
+}
+
+input {
+    margin-top:4px;
+    float: left;
+    display: block;
+}
+input[type=checkbox]{
+    margin-top:8px;   
+}*/
+
+select.dropdown {
+    -webkit-appearance: none;       
+    -moz-appearance: none;    
+    appearance: none;    
+    background-position: 22px 3px;                
+    background-size: 13px 13px; 
+    width: 80px;
+    height: 50px;
+    margin-left: 4px;
+    position: absolute;
+    cursor: pointer;
+
+}
+
+.overlay-arrow {
+    font-size: 9px;
+    color: red;
+    position: absolute;
+    right: 0px;
+    top : 10px;
+    cursor: default;
+    line-height: 5px;
+
+}
+
+.parent {
+    position: relative;
+    width: 80px;
+    height: 50px;
+    float: left;
+    margin: 0px;
+}
+
 /* Header */
 
 .header {
@@ -163,27 +282,15 @@ hr.small {
     position: relative;
     width: 100%;
     height: 100%;
-    background: url(../img/black.jpeg) no-repeat center center scroll;
+    background: url(../img/orange.jpg) no-repeat center center scroll;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border-color: #ff8000;
+    background-clip: content-box;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
-}
-
-/* About */
-
-.about {
-    padding: 50px 0;
-}
-
-/* Services */
-
-.services {
-    padding: 50px 0;
-}
-
-.service-item {
-    margin-bottom: 30px;
 }
 
 /* Callout */
@@ -193,7 +300,10 @@ hr.small {
     width: 100%;
     height: 400px;
     color: #fff;
-    background: url(../img/callout.jpg) no-repeat center center scroll;
+    background: 0;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border-color: #ff8000;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -201,14 +311,6 @@ hr.small {
 }
 
 /* Portfolio */
-
-.portfolio {
-    padding: 50px 0;
-}
-
-.portfolio-item {
-    margin-bottom: 30px;
-}
 
 .img-portfolio {
     margin: 0 auto;
@@ -223,28 +325,14 @@ hr.small {
 }
 
 input[type=text] {
-    width: 250px;
+    width: 100px;
     height: 40px;
     font-size: 20px;
     background-color:rgba(245,245,245,0.8);
 }
 
-input[type=password] {
-     width: 250px;
-     height: 40px;
-     font-size: 20px;
-     background-color:rgba(245,245,245,0.8);
-}
 
 /* Call to Action */
-
-.call-to-action {
-    padding: 50px 0;
-}
-
-.call-to-action .btn {
-    margin: 10px;
-}
 
 /* Map */
 
@@ -259,7 +347,3 @@ input[type=password] {
 }
 
 /* Footer */
-
-footer {
-    padding: 100px 0;
-}

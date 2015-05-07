@@ -22,6 +22,8 @@ class Exchanges(models.Model):
 class ConfirmExchange(models.Model):
     hostHasConfirmed = models.BooleanField(default=False)
     guestHasConfirmed = models.BooleanField(default=False)
+    host = models.CharField(max_length=30, default="")
+    guest = models.CharField(max_length=30, default="")
     exchange_str = models.CharField(default="", max_length=400)
     hostConfirmString = models.CharField(default = "", max_length=100)
     guestConfirmString = models.CharField(default = "", max_length=100)
