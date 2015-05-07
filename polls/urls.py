@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^(?i)Confirmation/(?P<anystring>.+)$', views.Confirmation, name='Confirmation'),
     url(r'^(?i)Download/$', views.DownloadLink, name='DownloadLink'),
     url(r'^(?i)SendEmails/$', views.SendEmails, name='SendEmails'),
+    url(r'^(?i)GuestConfirmation/(?P<anystring>.+)$', views.GuestConfirmation, name='GuestConfirmation'),
 
 
 
