@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^(?i)SavedChanges/$', views.SavedChanges, name='SavedChanges'), 
     url(r'^(?i)EditMembership/$', views.EditMembership, name='EditMembership'),
     url(r'^(?i)AddMembers/$', views.AddMembers, name='AddMembers'),
+    url(r'^(?i)$', views.HomeRedirect, name='HomeRedirect'),
     url(r'^(?i)Confirmation/(?P<anystring>.+)$', views.Confirmation, name='Confirmation'),
     url(r'^(?i)Download/$', views.DownloadLink, name='DownloadLink'),
     url(r'^(?i)SendEmails/$', views.SendEmails, name='SendEmails'),

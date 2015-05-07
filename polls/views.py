@@ -29,6 +29,9 @@ import xlwt
 global old_search
 old_search = []
 
+def HomeRedirect(request):
+    return HttpResponseRedirect('Home')
+
 def createCSV(clubName):
     style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on',
         num_format_str='#,##0.00')
