@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 import urllib, re
-from polls.models import Exchanges, Members, ClubPrefs, ConfirmExchange
+from polls.models import Exchanges, Members, ClubPrefs, ConfirmExchange, ConfirmGuest
 import _ssl;_ssl.PROTOCOL_SSLv23 = _ssl.PROTOCOL_SSLv3
 import os
 import webbrowser
@@ -122,6 +122,7 @@ def calculateOutstanding(netid):
     guestDinner = 0
     youUnconfirmed = 0
     otherUnconfirmed = 0
+    unconfirmedGuest = 0
 
     # confirmed exchanges
     for exchange in exchanges:
@@ -156,6 +157,11 @@ def calculateOutstanding(netid):
         else:
             youUnconfirmed += 1
 
+    guests = ConfirmGuest.objects.filter(host=netid)
+    for confirmG in guests:
+        if not confirmG.hostHasConfirmed:
+            unconfirmedGuest += 1
+
     outstanding = {
     'hostBreakfast': hostBreakfast,
     'hostBrunch': hostBrunch,
@@ -167,7 +173,9 @@ def calculateOutstanding(netid):
     'guestDinner': guestDinner,
     'guest': member.numguests,
     'youUnconfirmed': youUnconfirmed,
-    'otherUnconfirmed': otherUnconfirmed
+    'otherUnconfirmed': otherUnconfirmed,
+    'unconfirmedGuest': unconfirmedGuest
+
     }
 
     print "outstanding"
@@ -202,20 +210,50 @@ def send_email_plz(link, netid):
 
     EmailMessage(subject, message_text, to=to, from_email=from_email).send()
 
+
+def send_guest_email(link, netid):
+    subject = 'Confirm Guest Meal'
+    email = netid + "@princeton.edu"
+    to = [email]
+    from_email = settings.DEFAULT_FROM_EMAIL
+
+    outstanding = calculateOutstanding(netid)
+
+    ctx = {
+    'user': netid,
+    'link': link,
+    'hostBreakfast': outstanding['hostBreakfast'],
+    'hostBrunch': outstanding['hostBrunch'],
+    'hostLunch': outstanding['hostLunch'],
+    'hostDinner': outstanding['hostDinner'],
+    'guestBreakfast': outstanding['guestBreakfast'],
+    'guestBrunch': outstanding['guestBrunch'],
+    'guestLunch': outstanding['guestLunch'],
+    'guestDinner': outstanding['guestDinner'],
+    'guest': outstanding['guest'] - 1,
+    'youUnconfirmed': outstanding['youUnconfirmed'],
+    'otherUnconfirmed': outstanding['otherUnconfirmed']
+    }
+
+    message_text = render_to_string('guest.txt', ctx)
+
+    EmailMessage(subject, message_text, to=to, from_email=from_email).send()
+
 @login_required(redirect_field_name = None)
 def SendEmails(request):
     # send emails to anyone who has not fulfilled both sides of a meal exchange
-
+    from_email = settings.DEFAULT_FROM_EMAIL
     members = Members.objects.filter(club=request.user)
     for member in members:
 
         outstanding = calculateOutstanding(member.netID)
 
         subject = 'Meal Exchange Reminder'
-        to = member.netID + "@princeton.edu"
+        email = member.netID + "@princeton.edu"
+        to = [email]
 
         ctx = {
-            'user': netid,
+            'user': member.netID,
             'hostBreakfast': outstanding['hostBreakfast'],
             'hostBrunch': outstanding['hostBrunch'],
             'hostLunch': outstanding['hostLunch'],
@@ -223,39 +261,20 @@ def SendEmails(request):
             'guestBreakfast': outstanding['guestBreakfast'],
             'guestBrunch': outstanding['guestBrunch'],
             'guestLunch': outstanding['guestLunch'],
-            'guestDinner': outstanding['guestDinner']
+            'guestDinner': outstanding['guestDinner'],
+            'guest': outstanding['guest'],
+            'youUnconfirmed': outstanding['youUnconfirmed'],
+            'otherUnconfirmed': outstanding['otherUnconfirmed']
             }
 
         message_text = render_to_string('endOfMonth.txt', ctx)
         EmailMessage(subject, message_text, to=to, from_email=from_email).send()
+    return HttpResponseRedirect('../ViewExchanges')
 
 @login_required(redirect_field_name = None)
 def LogIn(request):
-
-    # return HttpResponse("this is the club log in page")
-    if request.method == 'POST':
-        form = AuthenticationForm(request.POST, label_suffix='')
-        # check whether it's valid:
-        if form.is_valid():
-            f = form.cleaned_data
-            if form.confirm_login_allowed(f['id_username']):
-                return HttpResponseRedirect("Home/")
-
-            user = authenticate(username=f['id_username'], password=f['id_password'])
-            if user is not None:
-                # the password verified for the user
-                if user.is_active:
-                    # HttpResponse("User is valid, active and authenticated")
-                    return HttpResponseRedirect("Home/")
-                else:
-                    return HttpResponse("The password is valid, but the account has been disabled!")
-        else:
-            # the authentication system was unable to verify the username and password
-            return render(request, 'error.html', {'message': "Login failed"})
-    else:
-        form = AuthenticationForm(label_suffix='')
-
-    return render(request, 'login.html', {'form': form})
+    return HttpResponseRedirect('../../accounts/login')
+    
 
 #@login_required(login_url = '/account/login/')
 @login_required(redirect_field_name = None)
@@ -485,8 +504,18 @@ def Guest(request):
             if (member.numguests < 1):
                 return render(request, 'error.html', {'message': "You're out of guest meals! Lol go eat at a Dining Hall"})
 
-            member.numguests -= 1
-            member.save()
+            # don't do decrement yet; do it when they click the link
+            print "confirming guest"
+            host_id = id_generator(64)
+            confirm = ConfirmGuest(hostConfirmString=host_id, hostHasConfirmed=False, host = host)
+            confirm.save()
+
+            host_signup_link = "localhost:8000/Xchange/GuestConfirmation/" + confirm.hostConfirmString
+
+            send_guest_email(host_signup_link, host)
+
+            # member.numguests -= 1
+            # member.save()
 
             return HttpResponseRedirect("../Thanks/")
         else:
@@ -542,7 +571,10 @@ def ViewExchanges(request):
 
 @login_required(redirect_field_name = None)
 def handleClubPrefs(request):
-    oldPrefs = ClubPrefs.objects.get(club_name=request.user)
+    try:
+        oldPrefs = ClubPrefs.objects.get(club_name=request.user)
+    except:
+        oldPrefs = "null"
     if request.method == 'POST':
 
         form = ClubPrefsForm(request.POST, oldPrefs=oldPrefs, label_suffix='')
@@ -779,6 +811,34 @@ def Confirmation(request, anystring=None):
                 exchangeHostObject.save()
                 exchangeGuestObject.save()
 
+            c.delete()
+        return HttpResponseRedirect("../Thanks/")
+    return render(request, 'error.html', {'message': "Error: meal exchange not confirmed"})
+
+
+def GuestConfirmation(request, anystring=None):
+    print "Confirmation"
+    if (anystring):
+        print("we got an anystring varable: " + anystring)
+
+        hc = ConfirmGuest.objects.filter(hostConfirmString=anystring)
+
+        if (len(hc) > 0):
+            hc[0].hostHasConfirmed = True
+            hc[0].save()
+            c = hc[0]
+        else:
+            return render(request, 'error.html', {'message': "Confirmation failed"})
+
+        # get the member
+        member = Members.objects.get(netID=hc.host)
+
+
+        
+
+        if c.hostHasConfirmed:
+            print "guest confirmed"
+            member.numguests -= 1
             c.delete()
         return HttpResponseRedirect("../Thanks/")
     return render(request, 'error.html', {'message': "Error: meal exchange not confirmed"})

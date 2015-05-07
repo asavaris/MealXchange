@@ -1,7 +1,7 @@
 Hello {{ user }},
 
-Click here to confirm your MealXchange:
- 
+Click here to confirm your Guest Meal: 
+
 {{ link }}
 
 You have:
