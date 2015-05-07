@@ -284,20 +284,20 @@ def LogIn(request):
 def Home(request):
 
     # check month, if the month is new, we reset everyone's guest meals
-    try:
-        clubPrefs = ClubPrefs.objects.get(club_name=request.user)
-    except:
-        return HttpResponseRedirect('../ClubPrefs')
+#    try:
+ #       clubPrefs = ClubPrefs.objects.get(club_name=request.user)
+  #  except:
+   #     return HttpResponseRedirect('../ClubPrefs')
 
-    if (datetime.today().month != clubPrefs.last_login):
+    #if (datetime.today().month != clubPrefs.last_login):
         # reset everyone's guest meals
-        members = Members.objects.filter(club=request.user)
-        for member in members:
-            member.numguests = clubPrefs.max_guests
-            member.save()
+     #   members = Members.objects.filter(club=request.user)
+      #  for member in members:
+       #     member.numguests = clubPrefs.max_guests
+        #    member.save()
 
-        clubPrefs.last_login = datetime.today().month
-        clubPrefs.save()
+        #clubPrefs.last_login = datetime.today().month
+        #clubPrefs.save()
 
     return render(request, 'home.html')
 
