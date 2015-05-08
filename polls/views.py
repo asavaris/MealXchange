@@ -283,13 +283,22 @@ def LogIn(request):
 @login_required(redirect_field_name = None)
 def Home(request):
 
+    print ("what is the  month")
+    print str(datetime.now().month)
+    lastYear = Exchanges.objects.filter(month=datetime.now().month)
+
     #check month, if the month is new, we reset everyone's guest meals
     try:
         clubPrefs = ClubPrefs.objects.get(club_name=request.user)
     except:
         return HttpResponseRedirect('../ClubPrefs')
 
+    # new month
     if (datetime.today().month != clubPrefs.last_login):
+
+        # delete exchanges from exactly a year ago
+        lastYear = Exchanges.objects.filter(month=datetime.today().month)
+
         #reset everyone's guest meals
         members = Members.objects.filter(club=request.user)
         for member in members:
@@ -571,7 +580,7 @@ def ViewExchanges(request):
         m["Brunch"] = exchange.brunch
         m["Lunch"] = exchange.lunch
         m["Dinner"] = exchange.dinner
-        m["Month"] = exchange.month.month
+        m["Month"] = exchange.month
 
         exchangeList.append(m)
 
@@ -603,7 +612,7 @@ def ViewExchanges(request):
                     m["Brunch"] = exchange.brunch
                     m["Lunch"] = exchange.lunch
                     m["Dinner"] = exchange.dinner
-                    m["Month"] = exchange.month.month
+                    m["Month"] = exchange.month
 
                     exchangeList.append(m)
 
@@ -909,6 +918,8 @@ def Confirmation(request, anystring=None):
     if (anystring):
         print("we got an anystring varable: " + anystring)
 
+        c = None
+
         hc = ConfirmExchange.objects.filter(hostConfirmString=anystring)
         gc = ConfirmExchange.objects.filter(guestConfirmString=anystring)
 
@@ -920,6 +931,9 @@ def Confirmation(request, anystring=None):
             gc[0].guestHasConfirmed = True
             gc[0].save()
             c = gc[0]
+
+        if c is None:
+            return render(request, 'error3.html', {'message': "You've already confirmed!"})
 
         if c.guestHasConfirmed and c.hostHasConfirmed:
             print "both confirmed"
@@ -942,9 +956,9 @@ def Confirmation(request, anystring=None):
                 print exchangeGuestObject
             # otherwise, new exchange
             except:
-                exchangeHostObject = Exchanges(hostName = name1, guestName = name2, hostClub = name1Club, guestClub = name2Club, month = datetime.now())
+                exchangeHostObject = Exchanges(hostName = name1, guestName = name2, hostClub = name1Club, guestClub = name2Club, month = datetime.now().month)
                 exchangeHostObject.save()
-                exchangeGuestObject = Exchanges(guestName = name1, hostName = name2, guestClub = name1Club, hostClub = name2Club, month = datetime.now())
+                exchangeGuestObject = Exchanges(guestName = name1, hostName = name2, guestClub = name1Club, hostClub = name2Club, month = datetime.now().month)
                 exchangeGuestObject.save()
 
 

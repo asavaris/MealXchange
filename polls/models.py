@@ -14,10 +14,10 @@ class Exchanges(models.Model):
     brunch      = models.IntegerField(default=0)
 
     #month       = models.DateTimeField('month').now().month
-    month       = models.DateTimeField(default = datetime.now().month)
+    month       = models.IntegerField(default = datetime.now().month)
 
     def __unicode__(self):              # __unicode__ on Python 2
-        return "%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d"%(self.hostName, self.hostClub, self.guestName, self.guestClub, self.breakfast, self.lunch, self.dinner, self.month.month)
+        return "%s\t%s\t%s\t%s\t%d\t%d\t%d\t%d"%(self.hostName, self.hostClub, self.guestName, self.guestClub, self.breakfast, self.lunch, self.dinner, int(self.month))
 
 class ConfirmExchange(models.Model):
     hostHasConfirmed = models.BooleanField(default=False)
