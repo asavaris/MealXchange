@@ -17,49 +17,49 @@ class GuestForm(forms.Form):
 
 class ClubPrefsForm(forms.Form):
 
-	def __init__(self, *args, **kwargs):
-		oldPrefs = kwargs.pop('oldPrefs')
+	# def __init__(self, *args, **kwargs):
+	# 	oldPrefs = kwargs.pop('oldPrefs')
 
-		timefields = [(" "," "), ("06:00","06:00"), ("06:30","06:30"), ("07:00","07:00"), ("07:30", "07:30"), ("08:00","08:00"), ("08:30", "08:30"), ("09:00", "09:00"), ("09:30", "09:30"), ("10:00","10:00"), ("10:30","10:30"), ("11:00","11:00"), ("11:30", "11:30"), ("12:00","12:00"), ("12:30", "12:30"), ("13:00", "13:00"), ("13:30", "13:30"), ("14:00","14:00"), ("14:30","14:30"), ("15:00","15:00"), ("15:30", "15:30"), ("16:00","16:00"), ("16:30", "16:30"), ("17:00", "17:00"), ("17:30", "17:30"), ("18:00","18:00"), ("18:30","18:30"), ("19:00","19:00"), ("19:30", "19:30"), ("20:00","20:00"), ("20:30", "20:30"), ("21:00", "21:00"), ("21:30", "21:30")]
+	timefields = [(" "," "), ("06:00","06:00"), ("06:30","06:30"), ("07:00","07:00"), ("07:30", "07:30"), ("08:00","08:00"), ("08:30", "08:30"), ("09:00", "09:00"), ("09:30", "09:30"), ("10:00","10:00"), ("10:30","10:30"), ("11:00","11:00"), ("11:30", "11:30"), ("12:00","12:00"), ("12:30", "12:30"), ("13:00", "13:00"), ("13:30", "13:30"), ("14:00","14:00"), ("14:30","14:30"), ("15:00","15:00"), ("15:30", "15:30"), ("16:00","16:00"), ("16:30", "16:30"), ("17:00", "17:00"), ("17:30", "17:30"), ("18:00","18:00"), ("18:30","18:30"), ("19:00","19:00"), ("19:30", "19:30"), ("20:00","20:00"), ("20:30", "20:30"), ("21:00", "21:00"), ("21:30", "21:30")]
 
-		if (oldPrefs == "null"):
+	# if (oldPrefs == "null"):
 
-			print "why is it null"
-			b_start = forms.ChoiceField(timefields, label='Breakfast start time', required=True)
-			b_end = forms.ChoiceField(timefields, label='Breakfast end time', required=True)
-			l_start = forms.ChoiceField(timefields, label='Lunch start time', required=True)
-			l_end = forms.ChoiceField(timefields, label='Lunch end time', required=True)
-			d_start = forms.ChoiceField(timefields, label='Dinner start time', required=True)
-			d_end = forms.ChoiceField(timefields, label='Dinner end time', required=True)
-			br_start = forms.ChoiceField(timefields, label='Brunch start time', required=True)
-			br_end = forms.ChoiceField(timefields, label='Brunch end time', required=True)
+	# print "why is it null"
+	b_start = forms.ChoiceField(timefields, label='Breakfast start time', required=True)
+	b_end = forms.ChoiceField(timefields, label='Breakfast end time', required=True)
+	l_start = forms.ChoiceField(timefields, label='Lunch start time', required=True)
+	l_end = forms.ChoiceField(timefields, label='Lunch end time', required=True)
+	d_start = forms.ChoiceField(timefields, label='Dinner start time', required=True)
+	d_end = forms.ChoiceField(timefields, label='Dinner end time', required=True)
+	br_start = forms.ChoiceField(timefields, label='Brunch start time', required=True)
+	br_end = forms.ChoiceField(timefields, label='Brunch end time', required=True)
 
-			max_guests = forms.IntegerField(label="Maximum number of guests", required = True, widget=forms.NumberInput(attrs={'style': 'width:62px; height:25px;'}))
+	max_guests = forms.IntegerField(label="Maximum number of guests", required = True, widget=forms.NumberInput(attrs={'style': 'width:62px; height:25px;'}))
 
-		else:
+		# else:
 
-			print "we're loading old values"
-			print "old prefs: " + str(oldPrefs)
-			super(ClubPrefsForm, self).__init__(*args, **kwargs)
+		# 	print "we're loading old values"
+		# 	print "old prefs: " + str(oldPrefs)
+		# 	super(ClubPrefsForm, self).__init__(*args, **kwargs)
 
-			#club_name = forms.CharField(label='club name', max_length=100, required=False)
-			print ("type of hour :" + str(type(oldPrefs.b_start.hour)))
-			print ("type of minute: " + str(type(oldPrefs.b_start.minute)))
+		# 	#club_name = forms.CharField(label='club name', max_length=100, required=False)
+		# 	print ("type of hour :" + str(type(oldPrefs.b_start.hour)))
+		# 	print ("type of minute: " + str(type(oldPrefs.b_start.minute)))
 
-			print "strf thing: " + str(oldPrefs.b_start.strftime('%H:%M'))
+		# 	print "strf thing: " + str(oldPrefs.b_start.strftime('%H:%M'))
 			
 
 
-			self.fields['b_start'] = forms.ChoiceField(timefields, label='Breakfast start time', required=True, initial=oldPrefs.b_start.strftime('%H:%M'))
-			self.fields['b_end'] = forms.ChoiceField(timefields, label='Breakfast end time', required=True, initial=oldPrefs.b_end.strftime('%H:%M'))
-			self.fields['l_start'] = forms.ChoiceField(timefields, label='Lunch start time', required=True, initial=oldPrefs.l_start.strftime('%H:%M'))
-			self.fields['l_end'] = forms.ChoiceField(timefields, label='Lunch end time', required=True, initial=oldPrefs.l_end.strftime('%H:%M'))
-			self.fields['d_start'] = forms.ChoiceField(timefields, label='Dinner start time', required=True, initial=oldPrefs.d_start.strftime('%H:%M'))
-			self.fields['d_end'] = forms.ChoiceField(timefields, label='Dinner end time', required=True, initial=oldPrefs.d_end.strftime('%H:%M'))
-			self.fields['br_start'] = forms.ChoiceField(timefields, label='Brunch start time', required=True, initial=oldPrefs.br_start.strftime('%H:%M'))
-			self.fields['br_end'] = forms.ChoiceField(timefields, label='Brunch end time', required=True, initial=oldPrefs.br_end.strftime('%H:%M'))
+		# 	self.fields['b_start'] = forms.ChoiceField(timefields, label='Breakfast start time', required=True, initial=oldPrefs.b_start.strftime('%H:%M'))
+		# 	self.fields['b_end'] = forms.ChoiceField(timefields, label='Breakfast end time', required=True, initial=oldPrefs.b_end.strftime('%H:%M'))
+		# 	self.fields['l_start'] = forms.ChoiceField(timefields, label='Lunch start time', required=True, initial=oldPrefs.l_start.strftime('%H:%M'))
+		# 	self.fields['l_end'] = forms.ChoiceField(timefields, label='Lunch end time', required=True, initial=oldPrefs.l_end.strftime('%H:%M'))
+		# 	self.fields['d_start'] = forms.ChoiceField(timefields, label='Dinner start time', required=True, initial=oldPrefs.d_start.strftime('%H:%M'))
+		# 	self.fields['d_end'] = forms.ChoiceField(timefields, label='Dinner end time', required=True, initial=oldPrefs.d_end.strftime('%H:%M'))
+		# 	self.fields['br_start'] = forms.ChoiceField(timefields, label='Brunch start time', required=True, initial=oldPrefs.br_start.strftime('%H:%M'))
+		# 	self.fields['br_end'] = forms.ChoiceField(timefields, label='Brunch end time', required=True, initial=oldPrefs.br_end.strftime('%H:%M'))
 
-			self.fields['max_guests'] = forms.IntegerField(label="Maximum number of guests", required = True, widget=forms.NumberInput(attrs={'style': 'width:62px; height:25px;'}), initial=oldPrefs.max_guests)
+		# 	self.fields['max_guests'] = forms.IntegerField(label="Maximum number of guests", required = True, widget=forms.NumberInput(attrs={'style': 'width:62px; height:25px;'}), initial=oldPrefs.max_guests)
 
 class ViewExchangesForm(forms.Form):
 	# ll = forms.BooleanField(label='Member netid', required=False)

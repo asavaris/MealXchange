@@ -73,10 +73,10 @@
             <h2 style="margin-left:200px;">Club Preferences</h2>
             <form action="/Xchange/ClubPrefs/" method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <!-- <br> -->
+                <!-- {{ form }} -->
+                <br>
 
-                <!-- <table align="left" style="margin-left:200px;">
+                <table align="left" style="margin-left:200px;">
                   <tr>
 
                     <td align="left">
@@ -84,7 +84,6 @@
                     </td>
                     <td align="left">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        {{ form.b_start.errors }}
                         {{ form.b_start }}<br><br>
                     </td>
                   </tr>
@@ -163,28 +162,29 @@
                   </tr>
                   <tr>
                     <td align="left">
-                        <br> -->
-                        <!-- <form method="link" action="/Xchange/Home/">
-                            <input type="submit" value="Go Back"> -->
-                        <!-- </form>
-                        <input type="submit" value="Save">  -->
-                       
+                        <br>
+                        <!-- 
+                        <form method="link" action="/Xchange/Home/">
+                            <input type="submit" value="Go Back">
+                        </form>
+                        <input type="submit" value="Save"> 
+                        -->
                         <a href="../Home/" class="btn btn-dark btn-lg">Back</a>
                         &nbsp;&nbsp;&nbsp;
                         <input type="submit" value="Save" class="btn btn-dark btn-lg">
-                   <!--  </td>
+                    </td>
                     <td align="left">
                     </td>
                   </tr>
-                  <br> -->
+                  <br>
 
-                <!-- </table> -->
-                <!-- <br><br> -->
+                </table>
+                <br><br>
                 <!-- 
                 <a href="../Home" class="btn btn-dark btn-lg">Go Back</a>
                 <input type="submit" value="Save" class="btn btn-dark btn-lg"> 
                 -->
-                <!-- <br><br> -->
+                <br><br>
             </form>
         </div>
     </header>

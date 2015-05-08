@@ -283,21 +283,21 @@ def LogIn(request):
 @login_required(redirect_field_name = None)
 def Home(request):
 
-    # check month, if the month is new, we reset everyone's guest meals
-#    try:
- #       clubPrefs = ClubPrefs.objects.get(club_name=request.user)
-  #  except:
-   #     return HttpResponseRedirect('../ClubPrefs')
+    #check month, if the month is new, we reset everyone's guest meals
+    try:
+        clubPrefs = ClubPrefs.objects.get(club_name=request.user)
+    except:
+        return HttpResponseRedirect('../ClubPrefs')
 
-    #if (datetime.today().month != clubPrefs.last_login):
-        # reset everyone's guest meals
-     #   members = Members.objects.filter(club=request.user)
-      #  for member in members:
-       #     member.numguests = clubPrefs.max_guests
-        #    member.save()
+    if (datetime.today().month != clubPrefs.last_login):
+        #reset everyone's guest meals
+        members = Members.objects.filter(club=request.user)
+        for member in members:
+            member.numguests = clubPrefs.max_guests
+            member.save()
 
-        #clubPrefs.last_login = datetime.today().month
-        #clubPrefs.save()
+        clubPrefs.last_login = datetime.today().month
+        clubPrefs.save()
 
     return render(request, 'home.html')
 
@@ -574,13 +574,16 @@ def ViewExchanges(request):
 
 @login_required(redirect_field_name = None)
 def handleClubPrefs(request):
-    try:
-        oldPrefs = ClubPrefs.objects.get(club_name=request.user)
-    except:
-        oldPrefs = "null"
     if request.method == 'POST':
 
-        form = ClubPrefsForm(request.POST, oldPrefs=oldPrefs, label_suffix='')
+        # we added this
+        try:
+            oldPrefs = ClubPrefs.objects.get(club_name=request.user)
+            form = ClubPrefsForm(request.POST, initial={'b_start': oldPrefs.b_start.strftime('%H:%M'), 'b_end': oldPrefs.b_end.strftime('%H:%M'), 'br_start': oldPrefs.br_start.strftime('%H:%M'), 'br_end': oldPrefs.br_end.strftime('%H:%M'), 'l_start': oldPrefs.l_start.strftime('%H:%M'), 'l_end': oldPrefs.l_end.strftime('%H:%M'), 'd_start': oldPrefs.d_start.strftime('%H:%M'), 'd_end': oldPrefs.d_end.strftime('%H:%M'), 'max_guests': oldPrefs.max_guests}, label_suffix='')
+
+        # this was here before
+        except:
+            form = ClubPrefsForm(request.POST)
         print "in post"
         if form.is_valid():
             f = form.cleaned_data
@@ -589,17 +592,28 @@ def handleClubPrefs(request):
             previousEntries = ClubPrefs.objects.filter(club_name=str(request.user)).delete()
 
             c = ClubPrefs(b_start=f['b_start'], l_start=f['l_start'], d_start=f['d_start'], br_start=f['br_start'],
-            b_end=f['b_end'], l_end=f['l_end'], d_end=f['d_end'], br_end=f['br_end'], max_guests=f['max_guests'], club_name=str(request.user), last_login=datetime.today().month)
+            b_end=f['b_end'], l_end=f['l_end'], d_end=f['d_end'], br_end=f['br_end'], max_guests=f['max_guests'], club_name=str(request.user))
             
             c.save()
             print ClubPrefs.objects.all()
             return HttpResponseRedirect("../SavedChanges")
         else:
-            return render(request, 'error.html', {'message': "You didn't fill out all the preferences!"})
+            return render(request, 'errorClubPreferences.html')
     else:
-        form = ClubPrefsForm(oldPrefs=oldPrefs, label_suffix='')
 
-    return render(request, 'clubprefs.html', {'form': form})
+        # we aded this 
+        try:
+            print "in try else"
+            oldPrefs = ClubPrefs.objects.get(club_name=request.user)
+            print "does it get to the form"
+            form = ClubPrefsForm(initial={'b_start': oldPrefs.b_start.strftime('%H:%M'), 'b_end': oldPrefs.b_end.strftime('%H:%M'), 'br_start': oldPrefs.br_start.strftime('%H:%M'), 'br_end': oldPrefs.br_end.strftime('%H:%M'), 'l_start': oldPrefs.l_start.strftime('%H:%M'), 'l_end': oldPrefs.l_end.strftime('%H:%M'), 'd_start': oldPrefs.d_start.strftime('%H:%M'), 'd_end': oldPrefs.d_end.strftime('%H:%M'), 'max_guests': oldPrefs.max_guests}, label_suffix='')
+
+        # this was here before
+        except:
+            form = ClubPrefsForm()
+
+    return render(request, 'clubprefs2.html', {'form': form})
+
 
 @login_required(redirect_field_name = None)
 def EditMembership(request):
