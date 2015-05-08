@@ -17,7 +17,7 @@ from django.contrib.sites.requests import RequestSite
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import timezone
-from .tables import SimpleTable, NameTable, ExchangeTable
+from .tables import SimpleTable, NameTable, ExchangeTable, UnconfirmedExchangeTable
 from django_tables2   import RequestConfig
 from django.db.models import Q
 from django.core.mail import send_mail, EmailMessage
@@ -385,7 +385,7 @@ def Exchange(request):
             exchange_str = "%s, %s, %s"%(name1, name2, meal)
             host_id = id_generator(64)
             guest_id = id_generator(64)
-            confirm = ConfirmExchange(hostConfirmString=host_id, guestConfirmString=guest_id, exchange_str=exchange_str, hostHasConfirmed=False, guestHasConfirmed=False, host = name1, guest = name2)
+            confirm = ConfirmExchange(hostConfirmString=host_id, guestConfirmString=guest_id, exchange_str=exchange_str, hostHasConfirmed=False, guestHasConfirmed=False, host = name1, guest = name2, meal= meal, hostClub=hostObject.club, month=datetime.now().month)
             confirm.save()
 
             print confirm
@@ -506,18 +506,17 @@ def SavedChanges(request):
     return render(request, 'savedchanges.html')
 
 
-
 @login_required(redirect_field_name = None)
-def ViewExchanges(request):
+def ViewUnconfirmedExchanges(request):
     print "in edit membership"
-    exchanges = Exchanges.objects.filter(hostClub=str(request.user)) 
+    exchanges = ConfirmExchange.objects.filter(hostClub=str(request.user)) 
 
-    exchanges = exchanges.extra(order_by=['hostName'])
+    exchanges = exchanges.extra(order_by=['host'])
     exchangeList = []
 
     for exchange in exchanges:
-        hostName = exchange.hostName
-        guestName = exchange.guestName
+        hostName = exchange.host
+        guestName = exchange.guest
         hostObject = Members.objects.get(netID=hostName)
         guestObject = Members.objects.get(netID=guestName)
 
@@ -526,11 +525,8 @@ def ViewExchanges(request):
         m["Member_netID"] = hostObject.netID
         m["Guest"] = guestObject.name
         m["Guest_netID"] = guestObject.netID
-        m["Guest_Club"] = exchange.guestClub
-        m["Breakfast"] = exchange.breakfast
-        m["Brunch"] = exchange.brunch
-        m["Lunch"] = exchange.lunch
-        m["Dinner"] = exchange.dinner
+        m["Guest_Club"] = guestObject.club
+        m["Meal"] = exchange.meal
         m["Month"] = exchange.month
 
         exchangeList.append(m)
@@ -548,8 +544,8 @@ def ViewExchanges(request):
                 exchangeList = []
 
                 for exchange in exchanges:
-                    hostName = exchange.hostName
-                    guestName = exchange.guestName
+                    hostName = exchange.host
+                    guestName = exchange.guest
                     hostObject = Members.objects.get(netID=hostName)
                     guestObject = Members.objects.get(netID=guestName)
 
@@ -558,11 +554,8 @@ def ViewExchanges(request):
                     m["Member_netID"] = hostObject.netID
                     m["Guest"] = guestObject.name
                     m["Guest_netID"] = guestObject.netID
-                    m["Guest_Club"] = exchange.guestClub
-                    m["Breakfast"] = exchange.breakfast
-                    m["Brunch"] = exchange.brunch
-                    m["Lunch"] = exchange.lunch
-                    m["Dinner"] = exchange.dinner
+                    m["Guest_Club"] = guestObject.club
+                    m["Meal"] = exchange.meal
                     m["Month"] = exchange.month
 
                     exchangeList.append(m)
@@ -570,9 +563,9 @@ def ViewExchanges(request):
             
             # return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
 
-            table = ExchangeTable(exchangeList)
+            table = UnconfirmedExchangeTable(exchangeList)
             RequestConfig(request).configure(table)
-            return render(request, 'ViewExchanges3.html', {'form': form, 'table' : table})
+            return render(request, 'ViewUnconfirmedExchanges.html', {'form': form, 'table' : table})
         else:
             print "invalid form"
             return render(request, 'error.html', {'message': "Error loading the form"})
@@ -580,11 +573,11 @@ def ViewExchanges(request):
         print "form empty"
         form = ViewExchangesForm(label_suffix='')
 
-        table = ExchangeTable(exchangeList)
+        table = UnconfirmedExchangeTable(exchangeList)
         RequestConfig(request).configure(table)
 
 
-    return render(request, 'ViewExchanges3.html', {'form': form, 'table' : table}) 
+    return render(request, 'ViewUnconfirmedExchanges.html', {'form': form, 'table' : table}) 
 
 
 

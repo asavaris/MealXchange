@@ -39,6 +39,19 @@ class ExchangeTable(tables.Table):
         super(ExchangeTable, self).__init__(*args, **kwargs)
         self.counter = itertools.count()
 
+class UnconfirmedExchangeTable(tables.Table):
+    Member = tables.Column()
+    Member_netID =tables.Column()
+    Guest = tables.Column()
+    Guest_netID = tables.Column()
+    Guest_Club = tables.Column()
+    Meal = tables.Column()
+    Month = tables.Column()
+
+    def __init__(self, *args, **kwargs):
+        super(UnconfirmedExchangeTable, self).__init__(*args, **kwargs)
+        self.counter = itertools.count()
+
 
   
 # table = SimpleTable([{'age': 31, 'id': 10}, {'age': 34, 'id': 11}])

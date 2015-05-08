@@ -16,6 +16,7 @@ urlpatterns = [
 	# url(r'^(?i)Exchange/Thanks/$', views.ExchangeThanks, name='ExchangeThanks'),
 	# url(r'^(?i)Guest/Thanks/$', views.GuestThanks, name='GuestThanks'),
     url(r'^(?i)ViewExchanges/$', views.ViewExchanges, name='ViewExchanges'),
+    url(r'^(?i)ViewUnconfirmedExchanges/$', views.ViewUnconfirmedExchanges, name='ViewUnconfirmedExchanges'),
     url(r'^(?i)ClubPrefs/$', views.handleClubPrefs, name='handleClubPrefs'),
     url(r'^(?i)SavedChanges/$', views.SavedChanges, name='SavedChanges'), 
     url(r'^(?i)EditMembership/$', views.EditMembership, name='EditMembership'),
