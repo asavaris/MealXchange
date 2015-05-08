@@ -17,7 +17,7 @@ from django.contrib.sites.requests import RequestSite
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import timezone
-from .tables import SimpleTable, NameTable
+from .tables import SimpleTable, NameTable, ExchangeTable
 from django_tables2   import RequestConfig
 from django.db.models import Q
 from django.core.mail import send_mail, EmailMessage
@@ -409,6 +409,10 @@ def Exchange(request):
 
             meal = whichMeal(request, datetime.now())
 
+            # if not a meal, return error
+            if ((meal != "breakfast") and (meal != "brunch") and (meal != "lunch") and (meal != "dinner")):
+                return render(request, 'error.html', {'message': "This is not a valid meal time"})
+
             if (hostObject.club == guestObject.club):
                 return render(request, 'error.html', {'message': "Host and guest can't be from same club"})
             #a = Exchanges(hostName = host, guestName = guest, hostClub = str(request.user), guestClub = guestObject.club, month = datetime.now())
@@ -545,23 +549,70 @@ def SavedChanges(request):
 
 @login_required(redirect_field_name = None)
 def ViewExchanges(request):
-    exchanges = Exchanges.objects.filter(hostClub=request.user)
-    # exchanges2 =  Exchanges.objects.filter(guestClub=request.user)
-    print "exchanges"
-    print exchanges
-    # print "exchanges2"
-    # print exchanges2
+    print "in edit membership"
+    exchanges = Exchanges.objects.filter(hostClub=str(request.user)) 
+
+    exchanges = exchanges.extra(order_by=['hostName'])
+    exchangeList = []
+
+    for exchange in exchanges:
+        hostName = exchange.hostName
+        guestName = exchange.guestName
+        hostObject = Members.objects.get(netID=hostName)
+        guestObject = Members.objects.get(netID=guestName)
+
+        m = {}
+        m["Member"] = hostObject.name
+        m["Member_netID"] = hostObject.netID
+        m["Guest"] = guestObject.name
+        m["Guest_netID"] = guestObject.netID
+        m["Guest_Club"] = exchange.guestClub
+        m["Breakfast"] = exchange.breakfast
+        m["Brunch"] = exchange.brunch
+        m["Lunch"] = exchange.lunch
+        m["Dinner"] = exchange.dinner
+        m["Month"] = exchange.month.month
+
+        exchangeList.append(m)
+
+
     if request.method == 'POST': 
         form = ViewExchangesForm(request.POST, label_suffix='')
         if form.is_valid():
             f = form.cleaned_data
             print f
             # return SearchExchanges(request, f['netid'])
-            exchanges = Exchanges.objects.filter( Q(hostClub=request.user) & Q(hostName=f['netid']) )
+            if (f['netid'] != ""):
+                exchanges = Exchanges.objects.filter( Q(hostClub=request.user) & Q(hostName=f['netid']) )
 
-            exchanges = exchanges.extra(order_by=['hostName'])
+                exchangeList = []
+
+                for exchange in exchanges:
+                    hostName = exchange.hostName
+                    guestName = exchange.guestName
+                    hostObject = Members.objects.get(netID=hostName)
+                    guestObject = Members.objects.get(netID=guestName)
+
+                    m = {}
+                    m["Member"] = hostObject.name
+                    m["Member_netID"] = hostObject.netID
+                    m["Guest"] = guestObject.name
+                    m["Guest_netID"] = guestObject.netID
+                    m["Guest_Club"] = exchange.guestClub
+                    m["Breakfast"] = exchange.breakfast
+                    m["Brunch"] = exchange.brunch
+                    m["Lunch"] = exchange.lunch
+                    m["Dinner"] = exchange.dinner
+                    m["Month"] = exchange.month.month
+
+                    exchangeList.append(m)
+
+            
             # return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
-            return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
+
+            table = ExchangeTable(exchangeList)
+            RequestConfig(request).configure(table)
+            return render(request, 'ViewExchanges3.html', {'form': form, 'table' : table})
         else:
             print "invalid form"
             return render(request, 'error.html', {'message': "Error loading the form"})
@@ -569,8 +620,98 @@ def ViewExchanges(request):
         print "form empty"
         form = ViewExchangesForm(label_suffix='')
 
-    return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
-    # return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})  
+        table = ExchangeTable(exchangeList)
+        RequestConfig(request).configure(table)
+
+
+    return render(request, 'ViewExchanges3.html', {'form': form, 'table' : table}) 
+
+
+
+
+    # print exchangeList
+    # if request.method == "POST":
+
+
+    #     membership = Members.objects.filter(club=str(request.user)) 
+
+    #     membership = membership.extra(order_by=['name'])
+    #     members = []
+
+    #     for member in membership:
+
+    #         m = {}
+    #         m["netID"] = member.netID
+    #         m["name"] = member.name
+    #         m["year"] = member.year
+    #         members.append(m)
+
+    #     if request.POST.get('search'):
+            
+    #         if form.is_valid():
+    #             f = form.cleaned_data
+
+    #             if f['netID'] is not None and f['netID'] != "":
+    #                 members = [x for x in members if x['netID'] == f['netID']]
+    #             if f['name'] is not None and f['name'] != "":
+    #                 members = [x for x in members if re.search(f['name'], x['name']) is not None]
+    #             if f['year'] is not None:
+    #                 if int(f['year']) >= 2013:
+    #                     members = [x for x in members if x['year'] == f['year']]
+    #             global old_search
+    #             old_search = members
+
+    #     table = SimpleTable(members)
+    #     RequestConfig(request).configure(table)
+
+    #     return render(request, 'ViewMembership.html', {'table': table, 'form': form})
+    # else:
+    #     print "adding a prefix"
+    #     print request
+    #     table = SimpleTable(members)
+    #     form = ViewMembersForm(label_suffix='')
+    #     RequestConfig(request).configure(table)
+
+
+    # #return render(request, 'EditMembership2.html', {'table': table})
+    # return render(request, 'ViewMembership.html', {'table': table, 'form': form})
+
+
+
+
+
+
+
+
+    # old way: it works fine
+
+
+    # exchanges = Exchanges.objects.filter(hostClub=request.user)
+    # # exchanges2 =  Exchanges.objects.filter(guestClub=request.user)
+    # print "exchanges"
+    # print exchanges
+    # # print "exchanges2"
+    # # print exchanges2
+    # if request.method == 'POST': 
+    #     form = ViewExchangesForm(request.POST, label_suffix='')
+    #     if form.is_valid():
+    #         f = form.cleaned_data
+    #         print f
+    #         # return SearchExchanges(request, f['netid'])
+    #         exchanges = Exchanges.objects.filter( Q(hostClub=request.user) & Q(hostName=f['netid']) )
+
+    #         exchanges = exchanges.extra(order_by=['hostName'])
+    #         # return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
+    #         return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
+    #     else:
+    #         print "invalid form"
+    #         return render(request, 'error.html', {'message': "Error loading the form"})
+    # else:
+    #     print "form empty"
+    #     form = ViewExchangesForm(label_suffix='')
+
+    # return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})
+    # # return render(request, 'ViewExchanges2.html', {'form': form, 'exchanges' : exchanges})  
 
 @login_required(redirect_field_name = None)
 def handleClubPrefs(request):
@@ -760,6 +901,9 @@ def AddMembers(request):
 
     return render(request, 'AddMembers.html', {'form': addMembers})
 
+def Confirmed(request):
+    return render(request, 'confirmed.html')
+
 def Confirmation(request, anystring=None):
     print "Confirmation"
     if (anystring):
@@ -829,7 +973,7 @@ def Confirmation(request, anystring=None):
                 exchangeGuestObject.save()
 
             c.delete()
-        return HttpResponseRedirect("../Thanks/")
+        return HttpResponseRedirect("../Confirmed/")
     return render(request, 'error.html', {'message': "Error: meal exchange not confirmed"})
 
 
@@ -858,5 +1002,5 @@ def GuestConfirmation(request, anystring=None):
             member.numguests -= 1
             member.save()
             c.delete()
-        return HttpResponseRedirect("../Thanks/")
+        return HttpResponseRedirect("../Confirmed/")
     return render(request, 'error.html', {'message': "Error: meal exchange not confirmed"})

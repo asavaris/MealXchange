@@ -11,13 +11,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Princeton MealXchange - View Exchanges</title>
+    <title>Princeton MealXchange - View Membership</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../../static/css/ViewExchanges.css" rel="stylesheet">
+    <link href="../../static/css/ViewMembership.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="../../static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -68,47 +68,29 @@
     </nav>
 
     <!-- Header -->
-<div style="margin:15px">
-<form action="/Xchange/ViewExchanges/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit" />
-</form>
-</div>
-<div style="margin:15px">
-<table>
-    <tr>
-        <th> Host </th>
-        <th> Guest </th>
-        <th> Guest club </th>
-        <th> Breakfast </th>
-        <th> Lunch </th>
-        <th> Dinner </th>
-        <th> Brunch </th>
-        <th> Month </th>
-    </tr>
-    {% if exchanges %}
-    {% for exchange in exchanges %}
-    <tr>
-        <td> {{ exchange.hostName}} </td>
-        <td> {{exchange.guestName}} </td>
-        <td> {{exchange.guestClub}} </td>
-        <td> {{exchange.breakfast}} </td>
-        <td> {{exchange.lunch}} </td>
-        <td> {{exchange.dinner}} </td>
-        <td> {{exchange.brunch}} </td>
-        <td> {{exchange.month.month}} </td>
-    </tr>
-    {% endfor %}
-    {% else %}
-    <p>No exchanges available.</p>
-    {% endif %}
-</table>
-</div>
-<br></br>
-<br></br>
-<div style="text-align: center">  <a href="../Download" class="btn btn-lighter btn-s" style="align: center; width: 15%; position: fixed; right: 50%">Download .csv</a> </div>
-<div style="text-align: center">  <a href="../SendEmails" class="btn btn-lighter btn-s" style="align: center; width: 15%; position: fixed; right: 30%">Send Emails</a> </div>
+    <header id="top" class="header">
+        <div style="margin:15px">
+            <form action="/Xchange/ViewExchanges/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Search" name="search"/>
+            <!-- <input type="submit" value="Add" /> -->
+            </form>
+        </div>
+        <br></br>
+        <div style="text-align: center; text-color: black; margin:15px">
+        <form action="/Xchange/ViewExchanges/" method="post">
+
+        {% load render_table from django_tables2 %}
+        {% render_table table %}
+        {% csrf_token %}
+
+        <!-- <input type="submit" value="Add" /> -->
+        </form>
+    
+    <br></br>
+
+    </header>
 
     <!-- jQuery -->
     <script src="../../static/js/jquery.js"></script>
@@ -148,8 +130,6 @@
     });
     </script>
 
-
 </body>
-
 
 </html>

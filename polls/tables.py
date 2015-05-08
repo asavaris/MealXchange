@@ -22,6 +22,24 @@ class SimpleTable(tables.Table):
         super(SimpleTable, self).__init__(*args, **kwargs)
         self.counter = itertools.count()
 
+class ExchangeTable(tables.Table):
+    Member = tables.Column()
+    Member_netID =tables.Column()
+    Guest = tables.Column()
+    Guest_netID = tables.Column()
+    Guest_Club = tables.Column()
+    Breakfast = tables.Column()
+    Lunch = tables.Column()
+    Dinner = tables.Column()
+    Brunch = tables.Column()
+    Month = tables.Column()
+
+
+    def __init__(self, *args, **kwargs):
+        super(ExchangeTable, self).__init__(*args, **kwargs)
+        self.counter = itertools.count()
+
+
   
 # table = SimpleTable([{'age': 31, 'id': 10}, {'age': 34, 'id': 11}])
 # for cell in table.rows[0]:
