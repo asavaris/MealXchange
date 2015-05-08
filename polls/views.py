@@ -507,6 +507,85 @@ def SavedChanges(request):
 
 
 
+@login_required(redirect_field_name = None)
+def ViewExchanges(request):
+    print "in edit membership"
+    exchanges = Exchanges.objects.filter(hostClub=str(request.user)) 
+
+    exchanges = exchanges.extra(order_by=['hostName'])
+    exchangeList = []
+
+    for exchange in exchanges:
+        hostName = exchange.hostName
+        guestName = exchange.guestName
+        hostObject = Members.objects.get(netID=hostName)
+        guestObject = Members.objects.get(netID=guestName)
+
+        m = {}
+        m["Member"] = hostObject.name
+        m["Member_netID"] = hostObject.netID
+        m["Guest"] = guestObject.name
+        m["Guest_netID"] = guestObject.netID
+        m["Guest_Club"] = exchange.guestClub
+        m["Breakfast"] = exchange.breakfast
+        m["Brunch"] = exchange.brunch
+        m["Lunch"] = exchange.lunch
+        m["Dinner"] = exchange.dinner
+        m["Month"] = exchange.month
+
+        exchangeList.append(m)
+
+
+    if request.method == 'POST': 
+        form = ViewExchangesForm(request.POST, label_suffix='')
+        if form.is_valid():
+            f = form.cleaned_data
+            print f
+            # return SearchExchanges(request, f['netid'])
+            if (f['netid'] != ""):
+                exchanges = Exchanges.objects.filter( Q(hostClub=request.user) & Q(hostName=f['netid']) )
+
+                exchangeList = []
+
+                for exchange in exchanges:
+                    hostName = exchange.hostName
+                    guestName = exchange.guestName
+                    hostObject = Members.objects.get(netID=hostName)
+                    guestObject = Members.objects.get(netID=guestName)
+
+                    m = {}
+                    m["Member"] = hostObject.name
+                    m["Member_netID"] = hostObject.netID
+                    m["Guest"] = guestObject.name
+                    m["Guest_netID"] = guestObject.netID
+                    m["Guest_Club"] = exchange.guestClub
+                    m["Breakfast"] = exchange.breakfast
+                    m["Brunch"] = exchange.brunch
+                    m["Lunch"] = exchange.lunch
+                    m["Dinner"] = exchange.dinner
+                    m["Month"] = exchange.month
+
+                    exchangeList.append(m)
+
+            
+            # return render(request, 'ViewExchanges.html',  {'form': form, 'exchanges' : exchanges})
+
+            table = ExchangeTable(exchangeList)
+            RequestConfig(request).configure(table)
+            return render(request, 'ViewExchanges3.html', {'form': form, 'table' : table})
+        else:
+            print "invalid form"
+            return render(request, 'error.html', {'message': "Error loading the form"})
+    else:
+        print "form empty"
+        form = ViewExchangesForm(label_suffix='')
+
+        table = ExchangeTable(exchangeList)
+        RequestConfig(request).configure(table)
+
+
+    return render(request, 'ViewExchanges3.html', {'form': form, 'table' : table}) 
+
 
 
 
@@ -819,8 +898,8 @@ def Confirmation(request, anystring=None):
             # if exchange exists, get it
             try:
                 print "this exchange object exists"
-                exchangeHostObject = Exchanges.objects.get(hostName=str(name1), guestName=str(name2))
-                exchangeGuestObject = Exchanges.objects.get(guestName=str(name1), hostName=str(name2))
+                exchangeHostObject = Exchanges.objects.get(hostName=str(name1), guestName=str(name2), month=datetime.now().month)
+                exchangeGuestObject = Exchanges.objects.get(guestName=str(name1), hostName=str(name2), month=datetime.now().month)
                 print "exchange Host - "
                 print exchangeHostObject
                 print "exchange Guest - "
