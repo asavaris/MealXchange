@@ -332,7 +332,7 @@ def DownloadLink(request):
 
     wb.save('Meal_Exchanges.xls')
     f = open('Meal_Exchanges.xls', 'rw')
-    response = HttpResponse(f)
+    response = HttpResponse(f, content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="Meal_Exchanges.xls"'
     return response
 
@@ -721,6 +721,7 @@ def EditMembership(request):
         m["netID"] = member.netID
         m["name"] = member.name
         m["year"] = member.year
+        m["Guest_Meals"] = member.numguests
         members.append(m)
 
     print members
@@ -762,6 +763,7 @@ def EditMembership(request):
             m["netID"] = member.netID
             m["name"] = member.name
             m["year"] = member.year
+            m["Guest_Meals"] = member.numguests
             members.append(m)
 
         if request.POST.get('search'):

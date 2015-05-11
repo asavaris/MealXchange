@@ -17,6 +17,7 @@ class SimpleTable(tables.Table):
     netID = tables.Column()
     name = tables.Column()
     year = tables.Column()
+    Guest_Meals = tables.Column()
 
     def __init__(self, *args, **kwargs):
         super(SimpleTable, self).__init__(*args, **kwargs)
