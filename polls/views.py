@@ -858,6 +858,10 @@ def AddMembers(request):
 def Confirmed(request):
     return render(request, 'confirmed.html')
 
+
+def About(request):
+    return render(request, 'about.html')
+
 def Confirmation(request, anystring=None):
     print "Confirmation"
     if (anystring):

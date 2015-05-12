@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% load i18n %}
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Princeton MealXchange - About</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../../static/css/about.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../../static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h2>About MealXchange</h2>
+            <br><br>
+            <a href="#HowToMember">How to MealXchange - Member</a> | <a href="#HowToAdmin">How to MealXchange - Admin</a> | <a href="#Testimonials">Testimonials</a>
+            <div class="transbox">
+                <p> At Princeton, the current pen-and-paper system for monitoring meal exchanges between eating clubs is inconvenient for everyone involved. Members don't know how many meal exchanges they have outstanding with their friends and club administrators spend hours manually tabulating meal exchanges at the end of each month. We're proposing a system where instead of using paper slips, students simply register their meal exchanges and guest meals online on our webapp. Students can receive updates on how many meal exchanges they have outstanding as well as how many guest meals they have left in the month. Eating clubs can edit memberships and club preferences, as well as view all exchanges online or by downloading a .csv file with all the computations done for them. Fewer lost slips of paper, fewer outstanding meal exchanges, fewer hours of manual tabulation. Everyone's a winner! </p>
+            </div>
+            <br><br>
+            <section id="HowToMember">
+            <h2> How to MealXchange - For Club Members</h2>
+            <div class="transbox">
+                <p> First is the login page for eating clubs. <p>
+                <img src="../../static/img/screenshots/login.png" alt="Login" style="width:400px;height:225px">
+                <br>
+                <p> Upon successful authentication of the club account, the user is brought to the home page, where the user has the option to choose to do a meal exchange or host a guest</p>
+                <img src="../../static/img/screenshots/home.png" alt="Home" style="width:400px;height:225px">
+                <br>
+                <p> From here, all that is left is to enter the necessary NetIDs for the exchange/guest and confirm! </p>
+                <img src="../../static/img/screenshots/exchange.png" alt="Exchange" style="width:400px;height:225px">
+                <img src="../../static/img/screenshots/guest.png" alt="Guest" style="width:400px;height:225px">
+                <br>
+                <img src="../../static/img/screenshots/thanks.png" alt="Login" style="width:400px;height:225px">
+            </div>
+        </section>
+            <br><br>
+            <section id="HowToAdmin">
+            <h2> How to MealXchange - For Club Administrators </h2>
+            <div class="transbox">
+                <p> Using the menu button in the top right corner of the home page, club administrators can effectively change settings and view outstanding Xchanges.
+                </p>
+                <img src="../../static/img/screenshots/home-with-menu.png" alt="Login" style="width:300px;height:225px">
+                <br><br>
+                <p> In the Club Preferences page, clubs can change the time periods for each meal, and set the montly number of allotted guests </p>
+                <img src="../../static/img/screenshots/club-prefs.png" alt="Login" style="width:400px;height:225px">
+                <br><br>
+                <p> In the Edit Membership page, clubs can add and delete members to the current roster of club members for authentication</p>
+                <img src="../../static/img/screenshots/edit-membership.png" alt="Login" style="width:400px;height:225px">
+                <br><br>
+                <p> The View Exchanges page allows clubs to see the outstanding exchanges, download a .csv file with exchange information, and send update emails to club members.</p>
+                <img src="../../static/img/screenshots/view-exchanges.png" alt="Login" style="width:600px;height:225px">
+                <br><br><br><br>
+                <h2> Congratulations! You've just learned to MealXchange! </h2>
+                <br><br>
+            </div>
+            </section>
+            <br><br>
+            <section id="Testimonials">
+            <h2> Testimonials </h2>
+            <div class="transbox">
+                <p> "This system has been far overdue." -
+                    Lucia Perasso: Terrace President '16 <p>
+                <p> "Wow I can't believe this hasn't existed all along. It's a game changer!" -
+                    Reed Tan: Terrace Treasurer '15 <p>
+            </div>
+        </section>
+        </div>
+    </header>
+
+    <!-- jQuery -->
+    <script src="../../static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../static/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+
+    // Scrolls to the selected menu item on the page
+    $(function() {
+        $('a[href*=#]:not([href=#])').click(function() {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 text-center">
+                    <h4><strong>MealXchange</strong>
+                    </h4>
+                    <p>Asavari Sinha, Ava Chen, Louis Guerra, Michael Buono, Paco Avila</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-envelope-o fa-fw"></i>  <a href="mailto:name@example.com">mbuono@princeton.edu</a>
+                        </li>
+                    </ul>
+                    <hr class="small">
+                    <p class="text-muted">Copyright &copy; MealXchange 2015</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
