@@ -36,6 +36,19 @@ def HomeRedirect(request):
 def id_generator(size):
     l = ["filler"]
     s = ''.join(random.SystemRandom().choice(string.uppercase + string.digits) for i in xrange(size))
+
+    exchanges = ConfirmExchange.objects.filter(Q(hostConfirmString=s) | Q(guestConfirmString=s))
+    guests = ConfirmGuest.objects.filter(hostConfirmString=s)
+
+    # Make sure the id is unique
+    if ( (len(exchanges) != 0) or (len(guests) != 0)):
+        while ((len (exchanges) != 0) or (len (guests) != 0)):
+            exchanges = ConfirmExchange.objects.filter(Q(hostConfirmString=s) | Q(guestConfirmString=s))
+            guests = ConfirmGuest.objects.filter(hostConfirmString=s)
+            print "any exchanges with this code?"
+            print exchanges
+
+
     # while len(l) == 0:
     #     s = ''.join(random.SystemRandom().choice(string.uppercase + string.digits) for i in xrange(size))
     #     l = ConfirmExchange.objects.filter(Q(hostConfirm=s) | Q(guestConfirm=s))
@@ -469,6 +482,13 @@ def Guest(request):
             if (member.numguests < 1):
                 return render(request, 'error.html', {'message': "You're out of guest meals! Lol go eat at a Dining Hall"})
 
+
+            meal = whichMeal(request, datetime.now())
+
+            # if not a meal, return error
+            if ((meal != "breakfast") and (meal != "brunch") and (meal != "lunch") and (meal != "dinner")):
+                return render(request, 'error.html', {'message': "This is not a valid meal time"})
+
             # don't do decrement yet; do it when they click the link
             print "confirming guest"
             host_id = id_generator(64)
@@ -860,7 +880,7 @@ def Confirmed(request):
 
 
 def About(request):
-    return render(request, 'about.html')
+    return render(request, 'about_page.html')
 
 def Confirmation(request, anystring=None):
     print "Confirmation"
